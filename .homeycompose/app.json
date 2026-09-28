@@ -1,0 +1,30 @@
+{
+  "id": "com.github.moogblob.juwel-appcontrol",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "name": {
+    "en": "JUWEL AppControl"
+  },
+  "description": {
+    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow"
+  },
+  "author": {
+    "name": "Johan Klintberg",
+    "email": "johan.klintberg@gmail.com"
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "settings": {
+    "title": "JUWEL AppControl",
+    "subtitle": "Sign in with your MyJUWEL account so Homey can control your HeliaLux, SmartFeed and EccoFlow devices.",
+    "account": "MyJUWEL account",
+    "username": "Email",
+    "password": "Password",
+    "show_password": "Show password",
+    "save": "Save",
+    "saved": "Your credentials have been saved.",
+    "error": {
+      "incomplete": "Please fill in both your email and password."
+    }
+  }
+}

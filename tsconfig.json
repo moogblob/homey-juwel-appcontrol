@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": ".homeybuild/"
+  },
+  "extends": "@tsconfig/node16/tsconfig.json"
+}

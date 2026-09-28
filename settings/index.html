@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+</head>
+
+<body>
+  <h1 class="homey-title" data-i18n="settings.title"></h1>
+  <p class="homey-subtitle" data-i18n="settings.subtitle"></p>
+
+  <fieldset class="homey-form-fieldset">
+    <legend class="homey-form-legend" data-i18n="settings.account"></legend>
+
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="username" data-i18n="settings.username"></label>
+      <input class="homey-form-input" id="username" type="email" autocomplete="username" value="" />
+    </div>
+
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="password" data-i18n="settings.password"></label>
+      <input class="homey-form-input" id="password" type="password" autocomplete="current-password" value="" />
+    </div>
+
+    <label class="homey-form-checkbox">
+      <input class="homey-form-checkbox-input" type="checkbox" id="show-password" />
+      <span class="homey-form-checkbox-checkmark"></span>
+      <span class="homey-form-checkbox-text" data-i18n="settings.show_password"></span>
+    </label>
+  </fieldset>
+
+  <button id="save" class="homey-button-primary-full" data-i18n="settings.save"></button>
+
+  <script type="text/javascript">
+    function onHomeyReady(Homey) {
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const showPassword = document.getElementById('show-password');
+      const saveButton = document.getElementById('save');
+
+      Homey.get('username', function (err, username) {
+        if (err) return Homey.alert(err);
+        usernameInput.value = username || '';
+      });
+
+      Homey.get('password', function (err, password) {
+        if (err) return Homey.alert(err);
+        passwordInput.value = password || '';
+      });
+
+      showPassword.addEventListener('change', function () {
+        passwordInput.type = showPassword.checked ? 'text' : 'password';
+      });
+
+      saveButton.addEventListener('click', function () {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (username === '' || password === '') {
+          return Homey.alert(Homey.__('settings.error.incomplete'));
+        }
+
+        saveButton.disabled = true;
+
+        Homey.set('username', username, function (err) {
+          if (err) {
+            saveButton.disabled = false;
+            return Homey.alert(err);
+          }
+
+          Homey.set('password', password, function (err) {
+            saveButton.disabled = false;
+            if (err) return Homey.alert(err);
+            Homey.alert(Homey.__('settings.saved'));
+          });
+        });
+      });
+
+      Homey.ready();
+    }
+  </script>
+</body>
+
+</html>
