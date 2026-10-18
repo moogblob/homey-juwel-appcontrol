@@ -1,0 +1,13 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Feed now"
+  },
+  "desc": {
+    "en": "Feeds the quantity set on the feeder."
+  },
+  "uiComponent": "button",
+  "getable": false,
+  "setable": true,
+  "insights": false
+}

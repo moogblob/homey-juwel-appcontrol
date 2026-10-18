@@ -1,0 +1,10 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Last feeding"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": false
+}
