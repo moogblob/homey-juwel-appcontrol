@@ -1,6 +1,7 @@
 import Homey from 'homey';
 import {
-  JuwelApiError, JuwelAuthError, JuwelCloud, channelLevels, type DeviceState,
+  JuwelApiError, JuwelAuthError, JuwelCloud, activePresetId, channelLevels, presetLevelsAt,
+  type ChannelValues, type DeviceState, type ManualLightOptions,
 } from '../../lib/juwel/client.js';
 import type JuwelApp from '../../app.js';
 import { hsToRgbPercent, rgbPercentToHs } from '../../lib/color.js';
@@ -27,10 +28,33 @@ function toUnit(percent: number): number {
   return Math.min(1, Math.max(0, percent / 100));
 }
 
+/**
+ * A schedule's channel levels in the lamp's manual terms: the strongest
+ * channel becomes the master brightness and the channels are scaled up to
+ * match, so brightness × channel gives the same light. This keeps `dim`
+ * telling how bright the lamp is, e.g. 5% for a faint blue night light.
+ * At 0 the channels carry no information and are left out.
+ */
+function scheduleAsManual(levels: ChannelValues): { brightness: number; channels?: ChannelValues } {
+  const max = Math.max(levels.red, levels.green, levels.blue, levels.white);
+  if (max <= 0) return { brightness: 0 };
+
+  const scale = (v: number) => Math.min(100, (v / max) * 100);
+  return {
+    brightness: Math.round(max),
+    channels: {
+      red: scale(levels.red), green: scale(levels.green), blue: scale(levels.blue), white: scale(levels.white),
+    },
+  };
+}
+
 export default class HeliaLuxDevice extends Homey.Device {
 
   private pollTimer: NodeJS.Timeout | null = null;
   private settleTimer: NodeJS.Timeout | null = null;
+
+  /** What the schedule is producing, while mode is "auto" and it could be computed. */
+  private schedule: ChannelValues | null = null;
 
   async onInit() {
     this.registerCapabilityListener('onoff', (value: boolean) => this.setPower(value));
@@ -65,18 +89,21 @@ export default class HeliaLuxDevice extends Homey.Device {
 
   private async setPower(on: boolean) {
     const cloud = this.getCloud();
-    if (on) await cloud.turnOn(this.getDeviceId());
+    if (on) await cloud.turnOn(this.getDeviceId(), this.manualFromSchedule());
     else await cloud.turnOff(this.getDeviceId());
     this.refreshAfterWrite();
   }
 
   private async setBrightness(value: number) {
-    await this.getCloud().setManual(this.getDeviceId(), { brightness: toPercent(value) });
+    await this.getCloud().setManual(this.getDeviceId(), { ...this.manualFromSchedule(), brightness: toPercent(value) });
     this.refreshAfterWrite();
   }
 
   private async setWhite(value: number) {
-    await this.getCloud().setManual(this.getDeviceId(), { channels: { white: toPercent(value) } });
+    const seed = this.manualFromSchedule();
+    await this.getCloud().setManual(this.getDeviceId(), {
+      ...seed, channels: { ...seed.channels, white: toPercent(value) },
+    });
     this.refreshAfterWrite();
   }
 
@@ -91,8 +118,10 @@ export default class HeliaLuxDevice extends Homey.Device {
       ?? (this.getCapabilityValue('light_saturation') as number | null)
       ?? 0;
 
-    const channels = hsToRgbPercent({ hue, saturation });
-    await this.getCloud().setManual(this.getDeviceId(), { channels });
+    const seed = this.manualFromSchedule();
+    await this.getCloud().setManual(this.getDeviceId(), {
+      ...seed, channels: { ...seed.channels, ...hsToRgbPercent({ hue, saturation }) },
+    });
     this.refreshAfterWrite();
   }
 
@@ -101,6 +130,17 @@ export default class HeliaLuxDevice extends Homey.Device {
     if (mode === 'auto') await cloud.resumeSchedule(this.getDeviceId());
     else await cloud.pauseSchedule(this.getDeviceId(), PREVIEW_TIMEOUT_S);
     this.refreshAfterWrite();
+  }
+
+  /**
+   * A manual change made while the schedule runs should start from the light
+   * the schedule is producing, not jump to the old manual values the lamp
+   * restores when paused. Empty in manual mode, or when the schedule is dark.
+   */
+  private manualFromSchedule(): ManualLightOptions {
+    if (this.schedule === null) return {};
+    const manual = scheduleAsManual(this.schedule);
+    return manual.channels === undefined ? {} : manual;
   }
 
   // ---- state ----------------------------------------------------------
@@ -141,13 +181,28 @@ export default class HeliaLuxDevice extends Homey.Device {
     }
 
     // While the schedule runs the lamp reports its last manual values rather
-    // than the live curve, so in "auto" mode the levels below are the values a
-    // manual override would restore, not what the lamp is showing right now.
-    if (state.brightness?.percentage !== undefined) {
-      await this.setCapabilityValue('dim', toUnit(state.brightness.percentage));
+    // than the live curve, and ignores the master brightness, so in "auto"
+    // mode the levels come from the active profile's curve instead.
+    if (state.mode === 'auto') {
+      const schedule = await this.scheduleLevels(state);
+      this.schedule = schedule;
+      // Unknown curve: keep the last shown values rather than the stale manual ones.
+      if (schedule === null) return;
+      const { brightness, channels } = scheduleAsManual(schedule);
+      await this.showLevels(brightness, channels ?? {});
+      return;
     }
 
-    const levels = channelLevels(state);
+    this.schedule = null;
+    await this.showLevels(state.brightness?.percentage, channelLevels(state));
+  }
+
+  /** Master brightness and channel levels, all in percent (0..100). */
+  private async showLevels(brightness: number | undefined, levels: Partial<ChannelValues>) {
+    if (brightness !== undefined) {
+      await this.setCapabilityValue('dim', toUnit(brightness));
+    }
+
     if (levels.white !== undefined) {
       await this.setCapabilityValue('dim.white', toUnit(levels.white));
     }
@@ -159,6 +214,29 @@ export default class HeliaLuxDevice extends Homey.Device {
         await this.setCapabilityValue('light_saturation', hs.saturation);
       }
     }
+  }
+
+  /** The active profile's channel levels right now, or null when they cannot be worked out. */
+  private async scheduleLevels(state: DeviceState): Promise<ChannelValues | null> {
+    const presetId = activePresetId(state);
+    if (presetId === null) return null;
+
+    try {
+      const preset = await (this.homey.app as JuwelApp).getPreset(presetId);
+      return preset === null ? null : presetLevelsAt(preset, this.minuteOfDay());
+    } catch (err) {
+      this.error('Could not read the lighting profile:', err instanceof JuwelApiError ? err.message : err);
+      return null;
+    }
+  }
+
+  /** Minutes after midnight in Homey's time zone, which the lamp is assumed to share. */
+  private minuteOfDay(): number {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: this.homey.clock.getTimezone(), hour: 'numeric', minute: 'numeric', hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const part = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+    return part('hour') * 60 + part('minute');
   }
 
   // ---- plumbing --------------------------------------------------------
