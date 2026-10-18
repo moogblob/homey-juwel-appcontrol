@@ -1,0 +1,14 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Flow rate"
+  },
+  "units": {
+    "en": "L/h"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "decimals": 0
+}

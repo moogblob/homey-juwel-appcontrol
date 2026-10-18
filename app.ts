@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { JuwelCloud } from './lib/juwel/client.js';
+import { JuwelCloud, type ProductConfig } from './lib/juwel/client.js';
 
 export const SETTING_USERNAME = 'username';
 export const SETTING_PASSWORD = 'password';
@@ -9,9 +9,16 @@ export type Credentials = {
   password: string;
 };
 
+export type PairDevice = {
+  name: string;
+  data: { id: string };
+  store: { productId: string };
+};
+
 export default class JuwelApp extends Homey.App {
 
   private cloud: JuwelCloud | null = null;
+  private productConfigs = new Map<string, Promise<ProductConfig>>();
 
   /**
    * onInit is called when the app is initialized.
@@ -62,11 +69,59 @@ export default class JuwelApp extends Homey.App {
     return this.cloud;
   }
 
+  /**
+   * The product catalogue entry (traits with msg_key and value schema) for a
+   * product id. It does not change at runtime, so it is fetched once per
+   * product; a failed fetch is forgotten so the next call retries.
+   */
+  getProductConfig(productId: string): Promise<ProductConfig> {
+    let config = this.productConfigs.get(productId);
+    if (config === undefined) {
+      config = this.getCloud().getProductConfig(productId);
+      config.catch(() => this.productConfigs.delete(productId));
+      this.productConfigs.set(productId, config);
+    }
+    return config;
+  }
+
+  /**
+   * Lists the account's devices whose catalogue type is one of
+   * `deviceTypeIds` ('light', 'feeder', 'eccoflow', ...). Only the cloud device id and product id
+   * are kept: the account payload also carries the device's aesKey and
+   * accessToken, which are secrets and must not be stored in Homey.
+   */
+  async listDevicesOfType(deviceTypeIds: string[], fallbackName: string): Promise<PairDevice[]> {
+    const settings = await this.getCloud().getSettings();
+    const result: PairDevice[] = [];
+
+    for (const device of settings.devices ?? []) {
+      if (!device.cloudDeviceId || !device.productId) continue;
+
+      let config: ProductConfig;
+      try {
+        config = await this.getProductConfig(device.productId);
+      } catch (err) {
+        this.error(`Could not read the product catalogue for ${device.productId}:`, err);
+        continue;
+      }
+      if (!deviceTypeIds.includes(config?.deviceTypeId)) continue;
+
+      result.push({
+        name: device.name || fallbackName,
+        data: { id: device.cloudDeviceId },
+        store: { productId: device.productId },
+      });
+    }
+
+    return result;
+  }
+
   private onSettingsChanged(key: string) {
     if (key !== SETTING_USERNAME && key !== SETTING_PASSWORD) return;
 
     // Drop the cached client so the next call logs in with the new credentials.
     this.cloud = null;
+    this.productConfigs.clear();
     this.log(`MyJUWEL credentials changed (${key})`);
   }
 

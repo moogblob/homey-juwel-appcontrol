@@ -1,0 +1,73 @@
+{
+  "name": {
+    "en": "EccoFlow"
+  },
+  "class": "other",
+  "capabilities": [
+    "onoff",
+    "juwel_flow_rate",
+    "juwel_pump_mode",
+    "onoff.smart_feed",
+    "onoff.power_limit"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "title": {
+        "en": "On/off"
+      }
+    },
+    "onoff.smart_feed": {
+      "title": {
+        "en": "Feeding pause"
+      }
+    },
+    "onoff.power_limit": {
+      "title": {
+        "en": "Power limit"
+      }
+    }
+  },
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "poll_interval",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval"
+      },
+      "hint": {
+        "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds."
+      },
+      "value": 30,
+      "min": 10,
+      "max": 3600,
+      "units": {
+        "en": "s"
+      }
+    }
+  ]
+}

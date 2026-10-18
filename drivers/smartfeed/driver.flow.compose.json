@@ -1,0 +1,48 @@
+{
+  "triggers": [
+    {
+      "id": "smartfeed_fed",
+      "title": {
+        "en": "Fish were fed"
+      },
+      "hint": {
+        "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh."
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "smartfeed_feed_default",
+      "title": {
+        "en": "Feed now"
+      },
+      "hint": {
+        "en": "Feeds the quantity set on the feeder."
+      }
+    },
+    {
+      "id": "smartfeed_feed",
+      "title": {
+        "en": "Feed an amount now"
+      },
+      "titleFormatted": {
+        "en": "Feed [[amount]] now"
+      },
+      "args": [
+        {
+          "type": "number",
+          "name": "amount",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "placeholder": {
+            "en": "Amount (1-8)"
+          },
+          "title": {
+            "en": "Amount"
+          }
+        }
+      ]
+    }
+  ]
+}

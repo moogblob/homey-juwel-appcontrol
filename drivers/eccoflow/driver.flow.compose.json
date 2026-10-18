@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "id": "eccoflow_set_mode",
+      "title": {
+        "en": "Set operating mode"
+      },
+      "titleFormatted": {
+        "en": "Set operating mode to [[mode]]"
+      },
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "mode",
+          "placeholder": {
+            "en": "Mode"
+          },
+          "title": {
+            "en": "Mode"
+          }
+        }
+      ]
+    },
+    {
+      "id": "eccoflow_reset_timer",
+      "title": {
+        "en": "Reset maintenance timer"
+      },
+      "titleFormatted": {
+        "en": "Reset the [[timer]] timer"
+      },
+      "args": [
+        {
+          "type": "autocomplete",
+          "name": "timer",
+          "placeholder": {
+            "en": "Timer"
+          },
+          "title": {
+            "en": "Timer"
+          }
+        }
+      ]
+    }
+  ]
+}

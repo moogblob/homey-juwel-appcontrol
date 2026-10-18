@@ -1,0 +1,82 @@
+{
+  "name": {
+    "en": "SmartFeed"
+  },
+  "class": "other",
+  "capabilities": [
+    "juwel_feed",
+    "juwel_feed_quantity",
+    "juwel_feed_key_quantity",
+    "onoff",
+    "onoff.led",
+    "alarm_generic.chamber_empty",
+    "alarm_generic.device_error",
+    "juwel_last_feed"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "title": {
+        "en": "On/off"
+      },
+      "uiQuickAction": false
+    },
+    "onoff.led": {
+      "title": {
+        "en": "Status LED"
+      }
+    },
+    "alarm_generic.chamber_empty": {
+      "title": {
+        "en": "Feed chamber empty"
+      }
+    },
+    "alarm_generic.device_error": {
+      "title": {
+        "en": "Device error"
+      }
+    }
+  },
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "poll_interval",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval"
+      },
+      "hint": {
+        "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds."
+      },
+      "value": 30,
+      "min": 10,
+      "max": 3600,
+      "units": {
+        "en": "s"
+      }
+    }
+  ]
+}

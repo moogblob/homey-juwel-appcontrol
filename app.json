@@ -30,7 +30,200 @@
     "xlarge": "/assets/images/xlarge.png"
   },
   "esm": true,
+  "flow": {
+    "actions": [
+      {
+        "id": "eccoflow_set_mode",
+        "title": {
+          "en": "Set operating mode"
+        },
+        "titleFormatted": {
+          "en": "Set operating mode to [[mode]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=eccoflow"
+          },
+          {
+            "type": "autocomplete",
+            "name": "mode",
+            "placeholder": {
+              "en": "Mode"
+            },
+            "title": {
+              "en": "Mode"
+            }
+          }
+        ]
+      },
+      {
+        "id": "eccoflow_reset_timer",
+        "title": {
+          "en": "Reset maintenance timer"
+        },
+        "titleFormatted": {
+          "en": "Reset the [[timer]] timer"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=eccoflow"
+          },
+          {
+            "type": "autocomplete",
+            "name": "timer",
+            "placeholder": {
+              "en": "Timer"
+            },
+            "title": {
+              "en": "Timer"
+            }
+          }
+        ]
+      },
+      {
+        "id": "smartfeed_feed_default",
+        "title": {
+          "en": "Feed now"
+        },
+        "hint": {
+          "en": "Feeds the quantity set on the feeder."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          }
+        ]
+      },
+      {
+        "id": "smartfeed_feed",
+        "title": {
+          "en": "Feed an amount now"
+        },
+        "titleFormatted": {
+          "en": "Feed [[amount]] now"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          },
+          {
+            "type": "number",
+            "name": "amount",
+            "min": 1,
+            "max": 8,
+            "step": 1,
+            "placeholder": {
+              "en": "Amount (1-8)"
+            },
+            "title": {
+              "en": "Amount"
+            }
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "id": "smartfeed_fed",
+        "title": {
+          "en": "Fish were fed"
+        },
+        "hint": {
+          "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
+    {
+      "name": {
+        "en": "EccoFlow"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff",
+        "juwel_flow_rate",
+        "juwel_pump_mode",
+        "onoff.smart_feed",
+        "onoff.power_limit"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "On/off"
+          }
+        },
+        "onoff.smart_feed": {
+          "title": {
+            "en": "Feeding pause"
+          }
+        },
+        "onoff.power_limit": {
+          "title": {
+            "en": "Power limit"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/eccoflow/assets/images/small.png",
+        "large": "/drivers/eccoflow/assets/images/large.png",
+        "xlarge": "/drivers/eccoflow/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s"
+          }
+        }
+      ],
+      "id": "eccoflow"
+    },
     {
       "name": {
         "en": "HeliaLux"
@@ -103,6 +296,89 @@
         }
       ],
       "id": "helialux"
+    },
+    {
+      "name": {
+        "en": "SmartFeed"
+      },
+      "class": "other",
+      "capabilities": [
+        "juwel_feed",
+        "juwel_feed_quantity",
+        "juwel_feed_key_quantity",
+        "onoff",
+        "onoff.led",
+        "alarm_generic.chamber_empty",
+        "alarm_generic.device_error",
+        "juwel_last_feed"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "On/off"
+          },
+          "uiQuickAction": false
+        },
+        "onoff.led": {
+          "title": {
+            "en": "Status LED"
+          }
+        },
+        "alarm_generic.chamber_empty": {
+          "title": {
+            "en": "Feed chamber empty"
+          }
+        },
+        "alarm_generic.device_error": {
+          "title": {
+            "en": "Device error"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/smartfeed/assets/images/small.png",
+        "large": "/drivers/smartfeed/assets/images/large.png",
+        "xlarge": "/drivers/smartfeed/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s"
+          }
+        }
+      ],
+      "id": "smartfeed"
     }
   ],
   "capabilities": {
@@ -132,6 +408,87 @@
           }
         }
       ]
+    },
+    "juwel_feed": {
+      "type": "boolean",
+      "title": {
+        "en": "Feed now"
+      },
+      "desc": {
+        "en": "Feeds the quantity set on the feeder."
+      },
+      "uiComponent": "button",
+      "getable": false,
+      "setable": true,
+      "insights": false
+    },
+    "juwel_feed_key_quantity": {
+      "type": "number",
+      "title": {
+        "en": "Feed quantity (device button)"
+      },
+      "desc": {
+        "en": "How much the feeder gives when its own button is pressed."
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "decimals": 0
+    },
+    "juwel_feed_quantity": {
+      "type": "number",
+      "title": {
+        "en": "Feed quantity"
+      },
+      "desc": {
+        "en": "How much the feeder gives per feeding."
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "decimals": 0
+    },
+    "juwel_flow_rate": {
+      "type": "number",
+      "title": {
+        "en": "Flow rate"
+      },
+      "units": {
+        "en": "L/h"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "decimals": 0
+    },
+    "juwel_last_feed": {
+      "type": "string",
+      "title": {
+        "en": "Last feeding"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false
+    },
+    "juwel_pump_mode": {
+      "type": "string",
+      "title": {
+        "en": "Operating mode"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false
     }
   }
 }
