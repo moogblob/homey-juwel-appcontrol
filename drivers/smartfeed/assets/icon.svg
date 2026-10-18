@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- feed hopper on top -->
+  <path d="M136,108h120a12,12 0 0 1 12,12v44h-24v-32h-96v32h-24v-44a12,12 0 0 1 12,-12z"/>
+  <!-- lid, with the drop shaft below the hopper and the two status LEDs -->
+  <path fill-rule="evenodd" d="M72,164h392a16,16 0 0 1 16,16v70h-424v-70a16,16 0 0 1 16,-16z M168,188v62h56v-62z M392,190a10,10 0 1 0 0.1,0z M428,190a10,10 0 1 0 0.1,0z"/>
+  <!-- base with the feed button -->
+  <path fill-rule="evenodd" d="M56,264h424v68a16,16 0 0 1 -16,16h-392a16,16 0 0 1 -16,-16z M384,278v56h56v-56z"/>
+  <rect x="396" y="290" width="32" height="32"/>
+  <!-- tank clip on the left and the mount underneath -->
+  <path d="M56,196l-36,132l24,8l28,-100z"/>
+  <path d="M152,348h184v56a12,12 0 0 1 -12,12h-160a12,12 0 0 1 -12,-12z"/>
+</svg>

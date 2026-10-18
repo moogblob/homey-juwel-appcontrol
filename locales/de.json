@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "title": "JUWEL AppControl",
+    "subtitle": "Melde dich mit deinem MyJUWEL-Konto an, damit Homey deine HeliaLux-, SmartFeed- und EccoFlow-Geräte steuern kann.",
+    "account": "MyJUWEL-Konto",
+    "username": "E-Mail",
+    "password": "Passwort",
+    "show_password": "Passwort anzeigen",
+    "save": "Speichern",
+    "saved": "Deine Zugangsdaten wurden gespeichert.",
+    "error": {
+      "incomplete": "Bitte gib deine E-Mail-Adresse und dein Passwort ein."
+    }
+  },
+  "error": {
+    "no_credentials": "Melde dich zuerst in den App-Einstellungen mit deinem MyJUWEL-Konto an.",
+    "credentials_rejected": "MyJUWEL hat deine Zugangsdaten abgelehnt. Prüfe sie in den App-Einstellungen.",
+    "device_offline": "Das Gerät ist über die MyJUWEL-Cloud nicht erreichbar.",
+    "not_supported": "Laut MyJUWEL-Produktkatalog unterstützt dieses Gerät das nicht."
+  },
+  "eccoflow": {
+    "timer": {
+      "clean_pump": "Pumpenreinigung",
+      "impeller": "Impeller",
+      "all": "alle"
+    }
+  }
+}

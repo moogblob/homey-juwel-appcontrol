@@ -1,0 +1,15 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Feed now",
+    "de": "Jetzt füttern"
+  },
+  "desc": {
+    "en": "Feeds the quantity set on the feeder.",
+    "de": "Füttert die am Futterautomaten eingestellte Menge."
+  },
+  "uiComponent": "button",
+  "getable": false,
+  "setable": true,
+  "insights": false
+}

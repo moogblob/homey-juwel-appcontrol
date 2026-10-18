@@ -10,23 +10,543 @@
     "cloud"
   ],
   "name": {
-    "en": "JUWEL AppControl"
+    "en": "JUWEL AppControl",
+    "de": "JUWEL AppControl"
   },
   "description": {
-    "en": "Control your HeliaLux, SmartFeed, EccoFlow"
+    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow",
+    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow"
   },
   "author": {
     "name": "Johan Klintberg",
     "email": "johan.klintberg@gmail.com"
   },
+  "support": "https://github.com/moogblob/homey-juwel-appcontrol/issues",
+  "source": "https://github.com/moogblob/homey-juwel-appcontrol",
+  "bugs": {
+    "url": "https://github.com/moogblob/homey-juwel-appcontrol/issues"
+  },
   "category": [
     "appliances"
   ],
+  "brandColor": "#0069B4",
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
-  "esm": true
+  "esm": true,
+  "flow": {
+    "actions": [
+      {
+        "id": "eccoflow_set_mode",
+        "title": {
+          "en": "Set operating mode",
+          "de": "Betriebsart einstellen"
+        },
+        "titleFormatted": {
+          "en": "Set operating mode to [[mode]]",
+          "de": "Betriebsart auf [[mode]] einstellen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=eccoflow"
+          },
+          {
+            "type": "autocomplete",
+            "name": "mode",
+            "placeholder": {
+              "en": "Mode",
+              "de": "Modus"
+            },
+            "title": {
+              "en": "Mode",
+              "de": "Modus"
+            }
+          }
+        ]
+      },
+      {
+        "id": "eccoflow_reset_timer",
+        "title": {
+          "en": "Reset maintenance timer",
+          "de": "Wartungszeitgeber zurücksetzen"
+        },
+        "titleFormatted": {
+          "en": "Reset the [[timer]] timer",
+          "de": "Zeitgeber [[timer]] zurücksetzen"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=eccoflow"
+          },
+          {
+            "type": "autocomplete",
+            "name": "timer",
+            "placeholder": {
+              "en": "Timer",
+              "de": "Zeitgeber"
+            },
+            "title": {
+              "en": "Timer",
+              "de": "Zeitgeber"
+            }
+          }
+        ]
+      },
+      {
+        "id": "smartfeed_feed_default",
+        "title": {
+          "en": "Feed now",
+          "de": "Jetzt füttern"
+        },
+        "hint": {
+          "en": "Feeds the quantity set on the feeder.",
+          "de": "Füttert die am Futterautomaten eingestellte Menge."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          }
+        ]
+      },
+      {
+        "id": "smartfeed_feed",
+        "title": {
+          "en": "Feed an amount now",
+          "de": "Jetzt eine bestimmte Menge füttern"
+        },
+        "titleFormatted": {
+          "en": "Feed [[amount]] now",
+          "de": "Jetzt Menge [[amount]] füttern"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          },
+          {
+            "type": "number",
+            "name": "amount",
+            "min": 1,
+            "max": 8,
+            "step": 1,
+            "placeholder": {
+              "en": "Amount (1-8)",
+              "de": "Menge (1-8)"
+            },
+            "title": {
+              "en": "Amount",
+              "de": "Menge"
+            }
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "id": "smartfeed_fed",
+        "title": {
+          "en": "Fish were fed",
+          "de": "Fische wurden gefüttert"
+        },
+        "hint": {
+          "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh.",
+          "de": "Wird ausgelöst, wenn der Futterautomat eine neue Fütterung meldet, egal ob von Homey, vom Futterplan oder über die Taste am Gerät. Wird bei der nächsten Aktualisierung erkannt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=smartfeed"
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "EccoFlow",
+        "de": "EccoFlow"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff",
+        "juwel_flow_rate",
+        "juwel_pump_mode",
+        "onoff.smart_feed",
+        "onoff.power_limit"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "On/off",
+            "de": "Ein/Aus"
+          }
+        },
+        "onoff.smart_feed": {
+          "title": {
+            "en": "Feeding pause",
+            "de": "Fütterungspause"
+          }
+        },
+        "onoff.power_limit": {
+          "title": {
+            "en": "Power limit",
+            "de": "Leistungsgrenze"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/eccoflow/assets/images/small.png",
+        "large": "/drivers/eccoflow/assets/images/large.png",
+        "xlarge": "/drivers/eccoflow/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds.",
+            "de": "Wie oft Homey den Zustand der Pumpe in der MyJUWEL-Cloud abfragt, in Sekunden."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s",
+            "de": "s"
+          }
+        }
+      ],
+      "id": "eccoflow"
+    },
+    {
+      "name": {
+        "en": "HeliaLux",
+        "de": "HeliaLux"
+      },
+      "class": "light",
+      "capabilities": [
+        "onoff",
+        "dim",
+        "light_hue",
+        "light_saturation",
+        "dim.white",
+        "helialux_mode"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "insights": false
+        },
+        "dim": {
+          "title": {
+            "en": "Brightness",
+            "de": "Helligkeit"
+          }
+        },
+        "dim.white": {
+          "title": {
+            "en": "White",
+            "de": "Weiß"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/helialux/assets/images/small.png",
+        "large": "/drivers/helialux/assets/images/large.png",
+        "xlarge": "/drivers/helialux/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds.",
+            "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s",
+            "de": "s"
+          }
+        }
+      ],
+      "id": "helialux"
+    },
+    {
+      "name": {
+        "en": "SmartFeed",
+        "de": "SmartFeed"
+      },
+      "class": "other",
+      "capabilities": [
+        "juwel_feed",
+        "juwel_feed_quantity",
+        "juwel_feed_key_quantity",
+        "onoff",
+        "onoff.led",
+        "alarm_generic.chamber_empty",
+        "alarm_generic.device_error",
+        "juwel_last_feed"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "On/off",
+            "de": "Ein/Aus"
+          },
+          "uiQuickAction": false
+        },
+        "onoff.led": {
+          "title": {
+            "en": "Status LED",
+            "de": "Status-LED"
+          }
+        },
+        "alarm_generic.chamber_empty": {
+          "title": {
+            "en": "Feed chamber empty",
+            "de": "Futterkammer leer"
+          }
+        },
+        "alarm_generic.device_error": {
+          "title": {
+            "en": "Device error",
+            "de": "Gerätefehler"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/smartfeed/assets/images/small.png",
+        "large": "/drivers/smartfeed/assets/images/large.png",
+        "xlarge": "/drivers/smartfeed/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds.",
+            "de": "Wie oft Homey den Zustand des Futterautomaten in der MyJUWEL-Cloud abfragt, in Sekunden."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s",
+            "de": "s"
+          }
+        }
+      ],
+      "id": "smartfeed"
+    }
+  ],
+  "capabilities": {
+    "helialux_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Mode",
+        "de": "Modus"
+      },
+      "desc": {
+        "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey.",
+        "de": "Ob die Leuchte ihrem gespeicherten Tagesprofil folgt oder einer in Homey eingestellten Farbe."
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Schedule",
+            "de": "Zeitplan"
+          }
+        },
+        {
+          "id": "rgb",
+          "title": {
+            "en": "Manual",
+            "de": "Manuell"
+          }
+        }
+      ]
+    },
+    "juwel_feed": {
+      "type": "boolean",
+      "title": {
+        "en": "Feed now",
+        "de": "Jetzt füttern"
+      },
+      "desc": {
+        "en": "Feeds the quantity set on the feeder.",
+        "de": "Füttert die am Futterautomaten eingestellte Menge."
+      },
+      "uiComponent": "button",
+      "getable": false,
+      "setable": true,
+      "insights": false
+    },
+    "juwel_feed_key_quantity": {
+      "type": "number",
+      "title": {
+        "en": "Feed quantity (device button)",
+        "de": "Futtermenge (Taste am Gerät)"
+      },
+      "desc": {
+        "en": "How much the feeder gives when its own button is pressed.",
+        "de": "Wie viel der Futterautomat ausgibt, wenn seine Taste gedrückt wird."
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "decimals": 0
+    },
+    "juwel_feed_quantity": {
+      "type": "number",
+      "title": {
+        "en": "Feed quantity",
+        "de": "Futtermenge"
+      },
+      "desc": {
+        "en": "How much the feeder gives per feeding.",
+        "de": "Wie viel der Futterautomat pro Fütterung ausgibt."
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "decimals": 0
+    },
+    "juwel_flow_rate": {
+      "type": "number",
+      "title": {
+        "en": "Flow rate",
+        "de": "Durchfluss"
+      },
+      "units": {
+        "en": "L/h",
+        "de": "l/h"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "decimals": 0
+    },
+    "juwel_last_feed": {
+      "type": "string",
+      "title": {
+        "en": "Last feeding",
+        "de": "Letzte Fütterung"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false
+    },
+    "juwel_pump_mode": {
+      "type": "string",
+      "title": {
+        "en": "Operating mode",
+        "de": "Betriebsart"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false
+    }
+  }
 }
