@@ -69,6 +69,39 @@ export function channelLevels(state: HeliaLuxState): Partial<ChannelValues> {
   return out;
 }
 
+/**
+ * The cloud preset id of the profile the lamp is running, or null when the
+ * state does not say. `presets` maps the device's slots to cloud preset ids.
+ */
+export function activePresetId(state: HeliaLuxState): string | null {
+  if (state.active_preset === undefined) return null;
+  return state.presets?.find((p) => p.id === state.active_preset)?.name ?? null;
+}
+
+/**
+ * Channel levels in percent (0..100) that a profile's daily curve gives at
+ * `minute` after midnight, interpolated linearly between its time events and
+ * wrapping around midnight. Returns null for a profile without time events.
+ */
+export function presetLevelsAt(preset: Preset, minute: number): ChannelValues | null {
+  const events = [...preset.timeEvents].sort((a, b) => a.time - b.time);
+  if (events.length === 0) return null;
+
+  // The last event at or before `minute`, else yesterday's last one.
+  let i = events.length - 1;
+  for (let j = 0; j < events.length && events[j].time <= minute; j++) i = j;
+
+  const prev = events[i];
+  const next = events[(i + 1) % events.length];
+  const span = (next.time - prev.time + 1440) % 1440 || 1440;
+  const t = ((minute - prev.time + 1440) % 1440) / span;
+
+  const lerp = (name: keyof ChannelValues) => prev.value[name] + (next.value[name] - prev.value[name]) * t;
+  return {
+    red: lerp('red'), green: lerp('green'), blue: lerp('blue'), white: lerp('white'),
+  };
+}
+
 export class JuwelCloud {
 
   readonly host: string;

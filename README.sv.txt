@@ -37,7 +37,7 @@ Det här kan du förvänta dig
 
 - När du ändrar färg, ljusstyrka eller vitt på en HeliaLux går lampan över till manuellt läge. Det varar i 1 timme, sedan återgår lampan till sitt schema av sig själv, precis som förhandsvisningen i JUWEL-appen.
 - Homey hämtar varje enhets status från molnet var 30:e sekund som standard. Du kan välja mellan 10 och 3600 sekunder i enhetens inställningar. En ändring som görs i JUWEL-appen eller direkt på enheten kan ta så lång tid innan den syns i Homey.
-- Medan en HeliaLux är i schemaläge visar Homey de värden som manuellt läge skulle använda, inte ljuset som schemat ger just nu.
+- Medan en HeliaLux är i schemaläge visar Homey ljuset som schemat ger just nu, uträknat från den aktiva profilen. Ljusstyrkan följer då den starkaste kanalen, så ett svagt nattljus visas som några få procent.
 - Allt går via MyJUWEL-molnet, så dina enheter och Homey behöver internetåtkomst. Om molnet ligger nere kan Homey inte styra dina enheter.
 - Om en enhet är offline i MyJUWEL visas den som otillgänglig i Homey.
 
