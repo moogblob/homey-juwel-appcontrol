@@ -1,7 +1,8 @@
 {
   "name": {
     "en": "EccoFlow",
-    "de": "EccoFlow"
+    "de": "EccoFlow",
+    "sv": "EccoFlow"
   },
   "class": "other",
   "capabilities": [
@@ -15,19 +16,22 @@
     "onoff": {
       "title": {
         "en": "On/off",
-        "de": "Ein/Aus"
+        "de": "Ein/Aus",
+        "sv": "På/av"
       }
     },
     "onoff.smart_feed": {
       "title": {
         "en": "Feeding pause",
-        "de": "Fütterungspause"
+        "de": "Fütterungspause",
+        "sv": "Matningspaus"
       }
     },
     "onoff.power_limit": {
       "title": {
         "en": "Power limit",
-        "de": "Leistungsgrenze"
+        "de": "Leistungsgrenze",
+        "sv": "Effektbegränsning"
       }
     }
   },
@@ -62,18 +66,21 @@
       "type": "number",
       "label": {
         "en": "Refresh interval",
-        "de": "Aktualisierungsintervall"
+        "de": "Aktualisierungsintervall",
+        "sv": "Uppdateringsintervall"
       },
       "hint": {
         "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds.",
-        "de": "Wie oft Homey den Zustand der Pumpe in der MyJUWEL-Cloud abfragt, in Sekunden."
+        "de": "Wie oft Homey den Zustand der Pumpe in der MyJUWEL-Cloud abfragt, in Sekunden.",
+        "sv": "Hur ofta Homey frågar MyJUWEL-molnet om pumpens status, i sekunder."
       },
       "value": 30,
       "min": 10,
       "max": 3600,
       "units": {
         "en": "s",
-        "de": "s"
+        "de": "s",
+        "sv": "s"
       }
     }
   ]

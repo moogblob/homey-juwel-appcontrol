@@ -2,11 +2,13 @@
   "type": "number",
   "title": {
     "en": "Feed quantity",
-    "de": "Futtermenge"
+    "de": "Futtermenge",
+    "sv": "Fodermängd"
   },
   "desc": {
     "en": "How much the feeder gives per feeding.",
-    "de": "Wie viel der Futterautomat pro Fütterung ausgibt."
+    "de": "Wie viel der Futterautomat pro Fütterung ausgibt.",
+    "sv": "Hur mycket foderautomaten ger per utfodring."
   },
   "uiComponent": "slider",
   "getable": true,

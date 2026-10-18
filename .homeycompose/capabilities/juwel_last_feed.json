@@ -2,7 +2,8 @@
   "type": "string",
   "title": {
     "en": "Last feeding",
-    "de": "Letzte Fütterung"
+    "de": "Letzte Fütterung",
+    "sv": "Senaste utfodring"
   },
   "uiComponent": "sensor",
   "getable": true,

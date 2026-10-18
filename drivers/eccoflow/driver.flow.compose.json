@@ -4,11 +4,13 @@
       "id": "eccoflow_set_mode",
       "title": {
         "en": "Set operating mode",
-        "de": "Betriebsart einstellen"
+        "de": "Betriebsart einstellen",
+        "sv": "Ställ in driftläge"
       },
       "titleFormatted": {
         "en": "Set operating mode to [[mode]]",
-        "de": "Betriebsart auf [[mode]] einstellen"
+        "de": "Betriebsart auf [[mode]] einstellen",
+        "sv": "Ställ in driftläge till [[mode]]"
       },
       "args": [
         {
@@ -16,11 +18,13 @@
           "name": "mode",
           "placeholder": {
             "en": "Mode",
-            "de": "Modus"
+            "de": "Modus",
+            "sv": "Läge"
           },
           "title": {
             "en": "Mode",
-            "de": "Modus"
+            "de": "Modus",
+            "sv": "Läge"
           }
         }
       ]
@@ -29,11 +33,13 @@
       "id": "eccoflow_reset_timer",
       "title": {
         "en": "Reset maintenance timer",
-        "de": "Wartungszeitgeber zurücksetzen"
+        "de": "Wartungszeitgeber zurücksetzen",
+        "sv": "Nollställ underhållstimer"
       },
       "titleFormatted": {
         "en": "Reset the [[timer]] timer",
-        "de": "Zeitgeber [[timer]] zurücksetzen"
+        "de": "Zeitgeber [[timer]] zurücksetzen",
+        "sv": "Nollställ timern för [[timer]]"
       },
       "args": [
         {
@@ -41,11 +47,13 @@
           "name": "timer",
           "placeholder": {
             "en": "Timer",
-            "de": "Zeitgeber"
+            "de": "Zeitgeber",
+            "sv": "Timer"
           },
           "title": {
             "en": "Timer",
-            "de": "Zeitgeber"
+            "de": "Zeitgeber",
+            "sv": "Timer"
           }
         }
       ]
