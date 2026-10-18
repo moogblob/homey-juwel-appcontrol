@@ -1,7 +1,8 @@
 {
   "type": "string",
   "title": {
-    "en": "Operating mode"
+    "en": "Operating mode",
+    "de": "Betriebsart"
   },
   "uiComponent": "sensor",
   "getable": true,

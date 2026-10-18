@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "EccoFlow"
+    "en": "EccoFlow",
+    "de": "EccoFlow"
   },
   "class": "other",
   "capabilities": [
@@ -13,17 +14,20 @@
   "capabilitiesOptions": {
     "onoff": {
       "title": {
-        "en": "On/off"
+        "en": "On/off",
+        "de": "Ein/Aus"
       }
     },
     "onoff.smart_feed": {
       "title": {
-        "en": "Feeding pause"
+        "en": "Feeding pause",
+        "de": "Fütterungspause"
       }
     },
     "onoff.power_limit": {
       "title": {
-        "en": "Power limit"
+        "en": "Power limit",
+        "de": "Leistungsgrenze"
       }
     }
   },
@@ -57,16 +61,19 @@
       "id": "poll_interval",
       "type": "number",
       "label": {
-        "en": "Refresh interval"
+        "en": "Refresh interval",
+        "de": "Aktualisierungsintervall"
       },
       "hint": {
-        "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds."
+        "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds.",
+        "de": "Wie oft Homey den Zustand der Pumpe in der MyJUWEL-Cloud abfragt, in Sekunden."
       },
       "value": 30,
       "min": 10,
       "max": 3600,
       "units": {
-        "en": "s"
+        "en": "s",
+        "de": "s"
       }
     }
   ]

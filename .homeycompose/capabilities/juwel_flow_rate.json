@@ -1,10 +1,12 @@
 {
   "type": "number",
   "title": {
-    "en": "Flow rate"
+    "en": "Flow rate",
+    "de": "Durchfluss"
   },
   "units": {
-    "en": "L/h"
+    "en": "L/h",
+    "de": "l/h"
   },
   "uiComponent": "sensor",
   "getable": true,

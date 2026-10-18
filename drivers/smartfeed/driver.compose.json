@@ -1,6 +1,7 @@
 {
   "name": {
-    "en": "SmartFeed"
+    "en": "SmartFeed",
+    "de": "SmartFeed"
   },
   "class": "other",
   "capabilities": [
@@ -16,23 +17,27 @@
   "capabilitiesOptions": {
     "onoff": {
       "title": {
-        "en": "On/off"
+        "en": "On/off",
+        "de": "Ein/Aus"
       },
       "uiQuickAction": false
     },
     "onoff.led": {
       "title": {
-        "en": "Status LED"
+        "en": "Status LED",
+        "de": "Status-LED"
       }
     },
     "alarm_generic.chamber_empty": {
       "title": {
-        "en": "Feed chamber empty"
+        "en": "Feed chamber empty",
+        "de": "Futterkammer leer"
       }
     },
     "alarm_generic.device_error": {
       "title": {
-        "en": "Device error"
+        "en": "Device error",
+        "de": "Gerätefehler"
       }
     }
   },
@@ -66,16 +71,19 @@
       "id": "poll_interval",
       "type": "number",
       "label": {
-        "en": "Refresh interval"
+        "en": "Refresh interval",
+        "de": "Aktualisierungsintervall"
       },
       "hint": {
-        "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds."
+        "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds.",
+        "de": "Wie oft Homey den Zustand des Futterautomaten in der MyJUWEL-Cloud abfragt, in Sekunden."
       },
       "value": 30,
       "min": 10,
       "max": 3600,
       "units": {
-        "en": "s"
+        "en": "s",
+        "de": "s"
       }
     }
   ]

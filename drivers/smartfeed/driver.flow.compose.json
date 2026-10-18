@@ -3,10 +3,12 @@
     {
       "id": "smartfeed_fed",
       "title": {
-        "en": "Fish were fed"
+        "en": "Fish were fed",
+        "de": "Fische wurden gefüttert"
       },
       "hint": {
-        "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh."
+        "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh.",
+        "de": "Wird ausgelöst, wenn der Futterautomat eine neue Fütterung meldet, egal ob von Homey, vom Futterplan oder über die Taste am Gerät. Wird bei der nächsten Aktualisierung erkannt."
       }
     }
   ],
@@ -14,19 +16,23 @@
     {
       "id": "smartfeed_feed_default",
       "title": {
-        "en": "Feed now"
+        "en": "Feed now",
+        "de": "Jetzt füttern"
       },
       "hint": {
-        "en": "Feeds the quantity set on the feeder."
+        "en": "Feeds the quantity set on the feeder.",
+        "de": "Füttert die am Futterautomaten eingestellte Menge."
       }
     },
     {
       "id": "smartfeed_feed",
       "title": {
-        "en": "Feed an amount now"
+        "en": "Feed an amount now",
+        "de": "Jetzt eine bestimmte Menge füttern"
       },
       "titleFormatted": {
-        "en": "Feed [[amount]] now"
+        "en": "Feed [[amount]] now",
+        "de": "Jetzt Menge [[amount]] füttern"
       },
       "args": [
         {
@@ -36,10 +42,12 @@
           "max": 8,
           "step": 1,
           "placeholder": {
-            "en": "Amount (1-8)"
+            "en": "Amount (1-8)",
+            "de": "Menge (1-8)"
           },
           "title": {
-            "en": "Amount"
+            "en": "Amount",
+            "de": "Menge"
           }
         }
       ]
