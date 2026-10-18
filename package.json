@@ -1,6 +1,7 @@
 {
   "name": "com.github.moogblob.juwel-appcontrol",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
