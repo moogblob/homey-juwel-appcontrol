@@ -4,11 +4,13 @@
       "id": "smartfeed_fed",
       "title": {
         "en": "Fish were fed",
-        "de": "Fische wurden gefüttert"
+        "de": "Fische wurden gefüttert",
+        "sv": "Fiskarna har matats"
       },
       "hint": {
         "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh.",
-        "de": "Wird ausgelöst, wenn der Futterautomat eine neue Fütterung meldet, egal ob von Homey, vom Futterplan oder über die Taste am Gerät. Wird bei der nächsten Aktualisierung erkannt."
+        "de": "Wird ausgelöst, wenn der Futterautomat eine neue Fütterung meldet, egal ob von Homey, vom Futterplan oder über die Taste am Gerät. Wird bei der nächsten Aktualisierung erkannt.",
+        "sv": "Körs när foderautomaten rapporterar en ny utfodring, oavsett om den kom från Homey, matningsschemat eller knappen på enheten. Upptäcks vid nästa uppdatering."
       }
     }
   ],
@@ -17,22 +19,26 @@
       "id": "smartfeed_feed_default",
       "title": {
         "en": "Feed now",
-        "de": "Jetzt füttern"
+        "de": "Jetzt füttern",
+        "sv": "Mata nu"
       },
       "hint": {
         "en": "Feeds the quantity set on the feeder.",
-        "de": "Füttert die am Futterautomaten eingestellte Menge."
+        "de": "Füttert die am Futterautomaten eingestellte Menge.",
+        "sv": "Matar den mängd som är inställd på foderautomaten."
       }
     },
     {
       "id": "smartfeed_feed",
       "title": {
         "en": "Feed an amount now",
-        "de": "Jetzt eine bestimmte Menge füttern"
+        "de": "Jetzt eine bestimmte Menge füttern",
+        "sv": "Mata en viss mängd nu"
       },
       "titleFormatted": {
         "en": "Feed [[amount]] now",
-        "de": "Jetzt Menge [[amount]] füttern"
+        "de": "Jetzt Menge [[amount]] füttern",
+        "sv": "Mata mängd [[amount]] nu"
       },
       "args": [
         {
@@ -43,11 +49,13 @@
           "step": 1,
           "placeholder": {
             "en": "Amount (1-8)",
-            "de": "Menge (1-8)"
+            "de": "Menge (1-8)",
+            "sv": "Mängd (1-8)"
           },
           "title": {
             "en": "Amount",
-            "de": "Menge"
+            "de": "Menge",
+            "sv": "Mängd"
           }
         }
       ]

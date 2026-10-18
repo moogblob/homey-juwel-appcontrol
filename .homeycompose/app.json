@@ -10,11 +10,13 @@
   ],
   "name": {
     "en": "JUWEL AppControl",
-    "de": "JUWEL AppControl"
+    "de": "JUWEL AppControl",
+    "sv": "JUWEL AppControl"
   },
   "description": {
     "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow",
-    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow"
+    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow",
+    "sv": "Styr din JUWEL HeliaLux, JUWEL SmartFeed och JUWEL EccoFlow"
   },
   "author": {
     "name": "Johan Klintberg",
