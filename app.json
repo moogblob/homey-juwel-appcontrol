@@ -13,7 +13,7 @@
     "en": "JUWEL AppControl"
   },
   "description": {
-    "en": "Control your HeliaLux, SmartFeed, EccoFlow"
+    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow"
   },
   "author": {
     "name": "Johan Klintberg",
@@ -22,11 +22,116 @@
   "category": [
     "appliances"
   ],
+  "brandColor": "#0069B4",
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
-  "esm": true
+  "esm": true,
+  "drivers": [
+    {
+      "name": {
+        "en": "HeliaLux"
+      },
+      "class": "light",
+      "capabilities": [
+        "onoff",
+        "dim",
+        "light_hue",
+        "light_saturation",
+        "dim.white",
+        "helialux_mode"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "insights": false
+        },
+        "dim": {
+          "title": {
+            "en": "Brightness"
+          }
+        },
+        "dim.white": {
+          "title": {
+            "en": "White"
+          }
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/helialux/assets/images/small.png",
+        "large": "/drivers/helialux/assets/images/large.png",
+        "xlarge": "/drivers/helialux/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Refresh interval"
+          },
+          "hint": {
+            "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds."
+          },
+          "value": 30,
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "s"
+          }
+        }
+      ],
+      "id": "helialux"
+    }
+  ],
+  "capabilities": {
+    "helialux_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Mode"
+      },
+      "desc": {
+        "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey."
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "insights": false,
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Schedule"
+          }
+        },
+        {
+          "id": "rgb",
+          "title": {
+            "en": "Manual"
+          }
+        }
+      ]
+    }
+  }
 }

@@ -21,6 +21,7 @@
   "category": [
     "appliances"
   ],
+  "brandColor": "#0069B4",
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",

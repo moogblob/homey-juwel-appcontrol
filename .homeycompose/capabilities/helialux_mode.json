@@ -1,0 +1,27 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Mode"
+  },
+  "desc": {
+    "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey."
+  },
+  "uiComponent": "picker",
+  "getable": true,
+  "setable": true,
+  "insights": false,
+  "values": [
+    {
+      "id": "auto",
+      "title": {
+        "en": "Schedule"
+      }
+    },
+    {
+      "id": "rgb",
+      "title": {
+        "en": "Manual"
+      }
+    }
+  ]
+}

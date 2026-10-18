@@ -11,5 +11,10 @@
     "error": {
       "incomplete": "Please fill in both your email and password."
     }
+  },
+  "error": {
+    "no_credentials": "Sign in with your MyJUWEL account in the app settings first.",
+    "credentials_rejected": "MyJUWEL rejected your credentials. Check them in the app settings.",
+    "device_offline": "The device is not reachable through the MyJUWEL cloud."
   }
 }
