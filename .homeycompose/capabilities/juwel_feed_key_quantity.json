@@ -1,0 +1,19 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Feed quantity (device button)",
+    "de": "Futtermenge (Taste am Gerät)"
+  },
+  "desc": {
+    "en": "How much the feeder gives when its own button is pressed.",
+    "de": "Wie viel der Futterautomat ausgibt, wenn seine Taste gedrückt wird."
+  },
+  "uiComponent": "slider",
+  "getable": true,
+  "setable": true,
+  "insights": false,
+  "min": 1,
+  "max": 8,
+  "step": 1,
+  "decimals": 0
+}

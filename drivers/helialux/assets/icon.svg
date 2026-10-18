@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="fade" gradientUnits="userSpaceOnUse" x1="0" y1="188" x2="0" y2="412">
+      <stop offset="0" stop-color="#000" stop-opacity="1"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- lamp bar: outlined housing with the LED strip along its underside -->
+  <path fill-rule="evenodd" d="M40,116a16,16 0 0 1 16,-16h400a16,16 0 0 1 16,16v32a16,16 0 0 1 -16,16h-400a16,16 0 0 1 -16,-16z M56,114v36h400v-36z"/>
+  <rect x="56" y="132" width="400" height="18"/>
+  <!-- light, fanning out and fading towards the water -->
+  <g fill="url(#fade)">
+    <polygon points="83,188 109,188 37,412 11,412"/>
+    <polygon points="147,188 173,188 130,412 104,412"/>
+    <polygon points="211,188 237,188 223,412 197,412"/>
+    <polygon points="275,188 301,188 315,412 289,412"/>
+    <polygon points="339,188 365,188 408,412 382,412"/>
+    <polygon points="403,188 429,188 501,412 475,412"/>
+  </g>
+</svg>

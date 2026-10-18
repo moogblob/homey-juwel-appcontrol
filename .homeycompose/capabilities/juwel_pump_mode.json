@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Operating mode",
+    "de": "Betriebsart"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": false
+}

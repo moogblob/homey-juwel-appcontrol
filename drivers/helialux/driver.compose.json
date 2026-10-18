@@ -1,0 +1,78 @@
+{
+  "name": {
+    "en": "HeliaLux",
+    "de": "HeliaLux"
+  },
+  "class": "light",
+  "capabilities": [
+    "onoff",
+    "dim",
+    "light_hue",
+    "light_saturation",
+    "dim.white",
+    "helialux_mode"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "insights": false
+    },
+    "dim": {
+      "title": {
+        "en": "Brightness",
+        "de": "Helligkeit"
+      }
+    },
+    "dim.white": {
+      "title": {
+        "en": "White",
+        "de": "Weiß"
+      }
+    }
+  },
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "poll_interval",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval",
+        "de": "Aktualisierungsintervall"
+      },
+      "hint": {
+        "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds.",
+        "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden."
+      },
+      "value": 30,
+      "min": 10,
+      "max": 3600,
+      "units": {
+        "en": "s",
+        "de": "s"
+      }
+    }
+  ]
+}

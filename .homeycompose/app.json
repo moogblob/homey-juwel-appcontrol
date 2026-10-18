@@ -9,18 +9,26 @@
     "cloud"
   ],
   "name": {
-    "en": "JUWEL AppControl"
+    "en": "JUWEL AppControl",
+    "de": "JUWEL AppControl"
   },
   "description": {
-    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow"
+    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow",
+    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow"
   },
   "author": {
     "name": "Johan Klintberg",
     "email": "johan.klintberg@gmail.com"
   },
+  "support": "https://github.com/moogblob/homey-juwel-appcontrol/issues",
+  "source": "https://github.com/moogblob/homey-juwel-appcontrol",
+  "bugs": {
+    "url": "https://github.com/moogblob/homey-juwel-appcontrol/issues"
+  },
   "category": [
     "appliances"
   ],
+  "brandColor": "#0069B4",
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
