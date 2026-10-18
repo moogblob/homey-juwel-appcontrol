@@ -6,8 +6,7 @@
   "sdk": 3,
   "runtime": "nodejs",
   "platforms": [
-    "local",
-    "cloud"
+    "local"
   ],
   "name": {
     "en": "JUWEL AppControl",
@@ -229,8 +228,7 @@
         }
       },
       "platforms": [
-        "local",
-        "cloud"
+        "local"
       ],
       "connectivity": [
         "cloud"
@@ -314,8 +312,7 @@
         }
       },
       "platforms": [
-        "local",
-        "cloud"
+        "local"
       ],
       "connectivity": [
         "cloud"
@@ -413,8 +410,7 @@
         }
       },
       "platforms": [
-        "local",
-        "cloud"
+        "local"
       ],
       "connectivity": [
         "cloud"
