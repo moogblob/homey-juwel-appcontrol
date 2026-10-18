@@ -229,6 +229,9 @@ export interface HeliaLuxState {
    * color and white stay frozen at the last manual value while the lamp
    * follows the profile curve; compute the current value from the active
    * Preset's timeEvents instead. Verified on hardware 2026-09-28.
+   * The master brightness does not scale the profile either: with brightness
+   * 80 and a profile at 100 on all channels the lamp runs at 100. Verified on
+   * hardware 2026-10-18.
    */
   brightness?: { percentage: number };
   color?: { red: number; green: number; blue: number };
@@ -253,7 +256,7 @@ export interface HeliaLuxState {
   preset_count?: number;
   /** Slot index per weekday, index 0 = Sunday .. 6 = Saturday. */
   preset_id_by_weekday?: number[];
-  /** Profiles stored on the device. `name` is the cloud preset id. */
+  /** Profiles stored on the device; `id` is the slot, `name` the cloud preset id. */
   presets?: { id: number; name: string; datapoints: number }[];
   /** True while a manual override (pause) is active. */
   preview?: boolean;

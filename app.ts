@@ -1,8 +1,11 @@
 import Homey from 'homey';
-import { JuwelCloud, type ProductConfig } from './lib/juwel/client.js';
+import { JuwelCloud, type Preset, type ProductConfig } from './lib/juwel/client.js';
 
 export const SETTING_USERNAME = 'username';
 export const SETTING_PASSWORD = 'password';
+
+/** How long lighting profiles are reused before an edit in the MyJUWEL app is picked up. */
+const PRESETS_TTL_MS = 60 * 60 * 1000;
 
 export type Credentials = {
   username: string;
@@ -19,6 +22,7 @@ export default class JuwelApp extends Homey.App {
 
   private cloud: JuwelCloud | null = null;
   private productConfigs = new Map<string, Promise<ProductConfig>>();
+  private presets: { fetchedAt: number; list: Promise<Preset[]> } | null = null;
 
   /**
    * onInit is called when the app is initialized.
@@ -85,6 +89,26 @@ export default class JuwelApp extends Homey.App {
   }
 
   /**
+   * A lighting profile with its daily curve, by cloud preset id. Profiles are
+   * shared by every lamp on the account and change rarely, so the list is
+   * reused for PRESETS_TTL_MS, or refetched sooner when `id` is not in it.
+   */
+  async getPreset(id: string): Promise<Preset | null> {
+    const cache = this.presets;
+    if (cache !== null && Date.now() - cache.fetchedAt < PRESETS_TTL_MS) {
+      const cached = (await cache.list.catch((): Preset[] => [])).find((p) => p.id === id);
+      if (cached) return cached;
+    }
+
+    const list = this.getCloud().getPresets();
+    this.presets = { fetchedAt: Date.now(), list };
+    list.catch(() => {
+      if (this.presets?.list === list) this.presets = null;
+    });
+    return (await list).find((p) => p.id === id) ?? null;
+  }
+
+  /**
    * Lists the account's devices whose catalogue type is one of
    * `deviceTypeIds` ('light', 'feeder', 'eccoflow', ...). Only the cloud device id and product id
    * are kept: the account payload also carries the device's aesKey and
@@ -122,6 +146,7 @@ export default class JuwelApp extends Homey.App {
     // Drop the cached client so the next call logs in with the new credentials.
     this.cloud = null;
     this.productConfigs.clear();
+    this.presets = null;
     this.log(`MyJUWEL credentials changed (${key})`);
   }
 

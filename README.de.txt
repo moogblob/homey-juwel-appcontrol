@@ -37,7 +37,7 @@ Was dich erwartet
 
 - Wenn du bei einer HeliaLux Farbe, Helligkeit oder Weißanteil änderst, wechselt die Leuchte in den manuellen Modus. Dieser dauert 1 Stunde, danach kehrt die Leuchte von selbst zu ihrem Zeitplan zurück, genau wie die Vorschau in der JUWEL App.
 - Homey fragt den Zustand jedes Geräts standardmäßig alle 30 Sekunden in der Cloud ab. In den Geräteeinstellungen kannst du einen Wert zwischen 10 und 3600 Sekunden wählen. Eine Änderung in der JUWEL App oder direkt am Gerät kann so lange brauchen, bis sie in Homey erscheint.
-- Solange eine HeliaLux im Zeitplan-Modus ist, zeigt Homey die Werte, die der manuelle Modus verwenden würde, nicht das Licht, das der Zeitplan gerade erzeugt.
+- Solange eine HeliaLux im Zeitplan-Modus ist, zeigt Homey das Licht, das der Zeitplan gerade erzeugt, berechnet aus dem aktiven Profil. Die Helligkeit folgt dann dem stärksten Kanal, sodass ein schwaches Nachtlicht als wenige Prozent angezeigt wird.
 - Alles läuft über die MyJUWEL-Cloud, deine Geräte und Homey brauchen also Internetzugang. Ist die Cloud nicht erreichbar, kann Homey deine Geräte nicht steuern.
 - Ist ein Gerät in MyJUWEL offline, wird es in Homey als nicht verfügbar angezeigt.
 
