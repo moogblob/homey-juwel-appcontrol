@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: athombv/github-action-homey-app-validate@master
+
+      # The app is TypeScript, and validating compiles it, so the dev
+      # dependencies (TypeScript, @tsconfig/node16) must be installed first.
+      # athombv/github-action-homey-app-validate skips that step, so run the
+      # same `homey app validate` command here instead.
+      - uses: actions/setup-node@v4
         with:
-          level: verified
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      - run: npx --yes homey app validate --level verified
