@@ -2,11 +2,13 @@
   "type": "enum",
   "title": {
     "en": "Mode",
-    "de": "Modus"
+    "de": "Modus",
+    "sv": "Läge"
   },
   "desc": {
     "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey.",
-    "de": "Ob die Leuchte ihrem gespeicherten Tagesprofil folgt oder einer in Homey eingestellten Farbe."
+    "de": "Ob die Leuchte ihrem gespeicherten Tagesprofil folgt oder einer in Homey eingestellten Farbe.",
+    "sv": "Om lampan följer sin sparade dygnsprofil eller en färg som ställts in manuellt från Homey."
   },
   "uiComponent": "picker",
   "getable": true,
@@ -17,14 +19,16 @@
       "id": "auto",
       "title": {
         "en": "Schedule",
-        "de": "Zeitplan"
+        "de": "Zeitplan",
+        "sv": "Schema"
       }
     },
     {
       "id": "rgb",
       "title": {
         "en": "Manual",
-        "de": "Manuell"
+        "de": "Manuell",
+        "sv": "Manuellt"
       }
     }
   ]

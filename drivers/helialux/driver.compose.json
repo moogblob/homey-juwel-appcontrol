@@ -1,7 +1,8 @@
 {
   "name": {
     "en": "HeliaLux",
-    "de": "HeliaLux"
+    "de": "HeliaLux",
+    "sv": "HeliaLux"
   },
   "class": "light",
   "capabilities": [
@@ -19,13 +20,15 @@
     "dim": {
       "title": {
         "en": "Brightness",
-        "de": "Helligkeit"
+        "de": "Helligkeit",
+        "sv": "Ljusstyrka"
       }
     },
     "dim.white": {
       "title": {
         "en": "White",
-        "de": "Weiß"
+        "de": "Weiß",
+        "sv": "Vitt"
       }
     }
   },
@@ -60,18 +63,21 @@
       "type": "number",
       "label": {
         "en": "Refresh interval",
-        "de": "Aktualisierungsintervall"
+        "de": "Aktualisierungsintervall",
+        "sv": "Uppdateringsintervall"
       },
       "hint": {
         "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds.",
-        "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden."
+        "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden.",
+        "sv": "Hur ofta Homey frågar MyJUWEL-molnet om lampans status, i sekunder."
       },
       "value": 30,
       "min": 10,
       "max": 3600,
       "units": {
         "en": "s",
-        "de": "s"
+        "de": "s",
+        "sv": "s"
       }
     }
   ]
