@@ -19,6 +19,11 @@
     "name": "Johan Klintberg",
     "email": "johan.klintberg@gmail.com"
   },
+  "support": "https://github.com/moogblob/homey-juwel-appcontrol/issues",
+  "source": "https://github.com/moogblob/homey-juwel-appcontrol",
+  "bugs": {
+    "url": "https://github.com/moogblob/homey-juwel-appcontrol/issues"
+  },
   "category": [
     "appliances"
   ],
