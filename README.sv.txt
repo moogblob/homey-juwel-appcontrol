@@ -15,22 +15,22 @@ Det här kan du göra med en HeliaLux
 - Välja färg med Homeys färghjul
 - Ställa in den vita kanalen separat
 - Växla mellan Schema (lampan följer dygnsprofilen som är sparad i MyJUWEL) och Manuellt (lampan visar värdena som ställts in i Homey)
-- Använda allt detta i Flöden, precis som med vilken Homey-lampa som helst
+- Använda allt detta i Flows, precis som med vilken Homey-lampa som helst
 
 Det här kan du göra med en SmartFeed
 
-- Mata nu, med den mängd som är inställd på foderautomaten eller en vald mängd (även i Flöden)
+- Mata nu, med den mängd som är inställd på foderautomaten eller en vald mängd (även i Flows)
 - Ställa in fodermängden, och mängden för knappen på foderautomaten
 - Slå på och av foderautomaten och dess statuslampa
 - Få ett larm när foderbehållaren är tom eller foderautomaten rapporterar ett fel
-- Se när fiskarna senast matades, och starta ett Flöde när de matas
+- Se när fiskarna senast matades, och starta ett Flow när de matas
 - Matningsscheman går inte att ändra från Homey ännu. Använd JUWEL-appen.
 
 Det här kan du göra med en EccoFlow
 
 - Slå på och av pumpen, och slå på matningspaus och effektbegränsning, om pumpen tillåter det
 - Se driftläge och flöde
-- Ändra driftläge och nollställa underhållstimrarna i Flöden
+- Ändra driftläge och nollställa underhållstimrarna i Flows
 - Vattentemperatur och pumplarm är inte tillgängliga, eftersom JUWEL inte beskriver dem för appar
 
 Det här kan du förvänta dig
