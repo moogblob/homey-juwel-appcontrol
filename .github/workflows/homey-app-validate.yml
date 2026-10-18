@@ -22,4 +22,4 @@ jobs:
 
       - run: npm ci --ignore-scripts
 
-      - run: npx --yes homey app validate --level verified
+      - run: npx --yes homey app validate --level publish
