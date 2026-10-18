@@ -2,7 +2,8 @@
   "type": "string",
   "title": {
     "en": "Operating mode",
-    "de": "Betriebsart"
+    "de": "Betriebsart",
+    "sv": "Driftläge"
   },
   "uiComponent": "sensor",
   "getable": true,

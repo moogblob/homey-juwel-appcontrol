@@ -1,7 +1,8 @@
 {
   "name": {
     "en": "SmartFeed",
-    "de": "SmartFeed"
+    "de": "SmartFeed",
+    "sv": "SmartFeed"
   },
   "class": "other",
   "capabilities": [
@@ -18,26 +19,30 @@
     "onoff": {
       "title": {
         "en": "On/off",
-        "de": "Ein/Aus"
+        "de": "Ein/Aus",
+        "sv": "På/av"
       },
       "uiQuickAction": false
     },
     "onoff.led": {
       "title": {
         "en": "Status LED",
-        "de": "Status-LED"
+        "de": "Status-LED",
+        "sv": "Statuslampa"
       }
     },
     "alarm_generic.chamber_empty": {
       "title": {
         "en": "Feed chamber empty",
-        "de": "Futterkammer leer"
+        "de": "Futterkammer leer",
+        "sv": "Foderbehållaren är tom"
       }
     },
     "alarm_generic.device_error": {
       "title": {
         "en": "Device error",
-        "de": "Gerätefehler"
+        "de": "Gerätefehler",
+        "sv": "Enhetsfel"
       }
     }
   },
@@ -72,18 +77,21 @@
       "type": "number",
       "label": {
         "en": "Refresh interval",
-        "de": "Aktualisierungsintervall"
+        "de": "Aktualisierungsintervall",
+        "sv": "Uppdateringsintervall"
       },
       "hint": {
         "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds.",
-        "de": "Wie oft Homey den Zustand des Futterautomaten in der MyJUWEL-Cloud abfragt, in Sekunden."
+        "de": "Wie oft Homey den Zustand des Futterautomaten in der MyJUWEL-Cloud abfragt, in Sekunden.",
+        "sv": "Hur ofta Homey frågar MyJUWEL-molnet om foderautomatens status, i sekunder."
       },
       "value": 30,
       "min": 10,
       "max": 3600,
       "units": {
         "en": "s",
-        "de": "s"
+        "de": "s",
+        "sv": "s"
       }
     }
   ]
