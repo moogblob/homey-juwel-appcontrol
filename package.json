@@ -7,6 +7,9 @@
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
   },
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.9",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
