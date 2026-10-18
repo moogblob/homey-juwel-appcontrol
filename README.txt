@@ -37,7 +37,7 @@ What to expect
 
 - On a HeliaLux, changing the colour, brightness or white level puts the lamp in Manual mode. Manual mode lasts for 1 hour, after which the lamp returns to its schedule by itself, just like a preview in the JUWEL app.
 - Homey gets each device's state from the cloud every 30 seconds by default. You can set this to between 10 and 3600 seconds in the device settings. A change made in the JUWEL app or on the device itself can take that long to appear in Homey.
-- While a HeliaLux is in Schedule mode, Homey shows the values Manual mode would use, not the light the schedule is currently producing.
+- While a HeliaLux is in Schedule mode, Homey shows the light the schedule is producing right now, worked out from the active profile. Brightness then follows the strongest channel, so a faint night light shows as a few percent.
 - Everything goes through the MyJUWEL cloud, so your devices and Homey need internet access. If the cloud is down, Homey cannot control your devices.
 - If a device is offline in MyJUWEL, it shows as unavailable in Homey.
 
