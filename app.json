@@ -10,10 +10,12 @@
     "cloud"
   ],
   "name": {
-    "en": "JUWEL AppControl"
+    "en": "JUWEL AppControl",
+    "de": "JUWEL AppControl"
   },
   "description": {
-    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow"
+    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow",
+    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow"
   },
   "author": {
     "name": "Johan Klintberg",
@@ -40,10 +42,12 @@
       {
         "id": "eccoflow_set_mode",
         "title": {
-          "en": "Set operating mode"
+          "en": "Set operating mode",
+          "de": "Betriebsart einstellen"
         },
         "titleFormatted": {
-          "en": "Set operating mode to [[mode]]"
+          "en": "Set operating mode to [[mode]]",
+          "de": "Betriebsart auf [[mode]] einstellen"
         },
         "args": [
           {
@@ -55,10 +59,12 @@
             "type": "autocomplete",
             "name": "mode",
             "placeholder": {
-              "en": "Mode"
+              "en": "Mode",
+              "de": "Modus"
             },
             "title": {
-              "en": "Mode"
+              "en": "Mode",
+              "de": "Modus"
             }
           }
         ]
@@ -66,10 +72,12 @@
       {
         "id": "eccoflow_reset_timer",
         "title": {
-          "en": "Reset maintenance timer"
+          "en": "Reset maintenance timer",
+          "de": "Wartungszeitgeber zurücksetzen"
         },
         "titleFormatted": {
-          "en": "Reset the [[timer]] timer"
+          "en": "Reset the [[timer]] timer",
+          "de": "Zeitgeber [[timer]] zurücksetzen"
         },
         "args": [
           {
@@ -81,10 +89,12 @@
             "type": "autocomplete",
             "name": "timer",
             "placeholder": {
-              "en": "Timer"
+              "en": "Timer",
+              "de": "Zeitgeber"
             },
             "title": {
-              "en": "Timer"
+              "en": "Timer",
+              "de": "Zeitgeber"
             }
           }
         ]
@@ -92,10 +102,12 @@
       {
         "id": "smartfeed_feed_default",
         "title": {
-          "en": "Feed now"
+          "en": "Feed now",
+          "de": "Jetzt füttern"
         },
         "hint": {
-          "en": "Feeds the quantity set on the feeder."
+          "en": "Feeds the quantity set on the feeder.",
+          "de": "Füttert die am Futterautomaten eingestellte Menge."
         },
         "args": [
           {
@@ -108,10 +120,12 @@
       {
         "id": "smartfeed_feed",
         "title": {
-          "en": "Feed an amount now"
+          "en": "Feed an amount now",
+          "de": "Jetzt eine bestimmte Menge füttern"
         },
         "titleFormatted": {
-          "en": "Feed [[amount]] now"
+          "en": "Feed [[amount]] now",
+          "de": "Jetzt Menge [[amount]] füttern"
         },
         "args": [
           {
@@ -126,10 +140,12 @@
             "max": 8,
             "step": 1,
             "placeholder": {
-              "en": "Amount (1-8)"
+              "en": "Amount (1-8)",
+              "de": "Menge (1-8)"
             },
             "title": {
-              "en": "Amount"
+              "en": "Amount",
+              "de": "Menge"
             }
           }
         ]
@@ -139,10 +155,12 @@
       {
         "id": "smartfeed_fed",
         "title": {
-          "en": "Fish were fed"
+          "en": "Fish were fed",
+          "de": "Fische wurden gefüttert"
         },
         "hint": {
-          "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh."
+          "en": "Fires when the feeder reports a new feeding, whether from Homey, its feeding plan or its own button. Noticed at the next refresh.",
+          "de": "Wird ausgelöst, wenn der Futterautomat eine neue Fütterung meldet, egal ob von Homey, vom Futterplan oder über die Taste am Gerät. Wird bei der nächsten Aktualisierung erkannt."
         },
         "args": [
           {
@@ -157,7 +175,8 @@
   "drivers": [
     {
       "name": {
-        "en": "EccoFlow"
+        "en": "EccoFlow",
+        "de": "EccoFlow"
       },
       "class": "other",
       "capabilities": [
@@ -170,17 +189,20 @@
       "capabilitiesOptions": {
         "onoff": {
           "title": {
-            "en": "On/off"
+            "en": "On/off",
+            "de": "Ein/Aus"
           }
         },
         "onoff.smart_feed": {
           "title": {
-            "en": "Feeding pause"
+            "en": "Feeding pause",
+            "de": "Fütterungspause"
           }
         },
         "onoff.power_limit": {
           "title": {
-            "en": "Power limit"
+            "en": "Power limit",
+            "de": "Leistungsgrenze"
           }
         }
       },
@@ -214,16 +236,19 @@
           "id": "poll_interval",
           "type": "number",
           "label": {
-            "en": "Refresh interval"
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
-            "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds."
+            "en": "How often Homey asks the MyJUWEL cloud for the pump's state, in seconds.",
+            "de": "Wie oft Homey den Zustand der Pumpe in der MyJUWEL-Cloud abfragt, in Sekunden."
           },
           "value": 30,
           "min": 10,
           "max": 3600,
           "units": {
-            "en": "s"
+            "en": "s",
+            "de": "s"
           }
         }
       ],
@@ -231,7 +256,8 @@
     },
     {
       "name": {
-        "en": "HeliaLux"
+        "en": "HeliaLux",
+        "de": "HeliaLux"
       },
       "class": "light",
       "capabilities": [
@@ -248,12 +274,14 @@
         },
         "dim": {
           "title": {
-            "en": "Brightness"
+            "en": "Brightness",
+            "de": "Helligkeit"
           }
         },
         "dim.white": {
           "title": {
-            "en": "White"
+            "en": "White",
+            "de": "Weiß"
           }
         }
       },
@@ -287,16 +315,19 @@
           "id": "poll_interval",
           "type": "number",
           "label": {
-            "en": "Refresh interval"
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
-            "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds."
+            "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds.",
+            "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden."
           },
           "value": 30,
           "min": 10,
           "max": 3600,
           "units": {
-            "en": "s"
+            "en": "s",
+            "de": "s"
           }
         }
       ],
@@ -304,7 +335,8 @@
     },
     {
       "name": {
-        "en": "SmartFeed"
+        "en": "SmartFeed",
+        "de": "SmartFeed"
       },
       "class": "other",
       "capabilities": [
@@ -320,23 +352,27 @@
       "capabilitiesOptions": {
         "onoff": {
           "title": {
-            "en": "On/off"
+            "en": "On/off",
+            "de": "Ein/Aus"
           },
           "uiQuickAction": false
         },
         "onoff.led": {
           "title": {
-            "en": "Status LED"
+            "en": "Status LED",
+            "de": "Status-LED"
           }
         },
         "alarm_generic.chamber_empty": {
           "title": {
-            "en": "Feed chamber empty"
+            "en": "Feed chamber empty",
+            "de": "Futterkammer leer"
           }
         },
         "alarm_generic.device_error": {
           "title": {
-            "en": "Device error"
+            "en": "Device error",
+            "de": "Gerätefehler"
           }
         }
       },
@@ -370,16 +406,19 @@
           "id": "poll_interval",
           "type": "number",
           "label": {
-            "en": "Refresh interval"
+            "en": "Refresh interval",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
-            "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds."
+            "en": "How often Homey asks the MyJUWEL cloud for the feeder's state, in seconds.",
+            "de": "Wie oft Homey den Zustand des Futterautomaten in der MyJUWEL-Cloud abfragt, in Sekunden."
           },
           "value": 30,
           "min": 10,
           "max": 3600,
           "units": {
-            "en": "s"
+            "en": "s",
+            "de": "s"
           }
         }
       ],
@@ -390,10 +429,12 @@
     "helialux_mode": {
       "type": "enum",
       "title": {
-        "en": "Mode"
+        "en": "Mode",
+        "de": "Modus"
       },
       "desc": {
-        "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey."
+        "en": "Whether the lamp follows its stored daily profile or a manual colour set from Homey.",
+        "de": "Ob die Leuchte ihrem gespeicherten Tagesprofil folgt oder einer in Homey eingestellten Farbe."
       },
       "uiComponent": "picker",
       "getable": true,
@@ -403,13 +444,15 @@
         {
           "id": "auto",
           "title": {
-            "en": "Schedule"
+            "en": "Schedule",
+            "de": "Zeitplan"
           }
         },
         {
           "id": "rgb",
           "title": {
-            "en": "Manual"
+            "en": "Manual",
+            "de": "Manuell"
           }
         }
       ]
@@ -417,10 +460,12 @@
     "juwel_feed": {
       "type": "boolean",
       "title": {
-        "en": "Feed now"
+        "en": "Feed now",
+        "de": "Jetzt füttern"
       },
       "desc": {
-        "en": "Feeds the quantity set on the feeder."
+        "en": "Feeds the quantity set on the feeder.",
+        "de": "Füttert die am Futterautomaten eingestellte Menge."
       },
       "uiComponent": "button",
       "getable": false,
@@ -430,10 +475,12 @@
     "juwel_feed_key_quantity": {
       "type": "number",
       "title": {
-        "en": "Feed quantity (device button)"
+        "en": "Feed quantity (device button)",
+        "de": "Futtermenge (Taste am Gerät)"
       },
       "desc": {
-        "en": "How much the feeder gives when its own button is pressed."
+        "en": "How much the feeder gives when its own button is pressed.",
+        "de": "Wie viel der Futterautomat ausgibt, wenn seine Taste gedrückt wird."
       },
       "uiComponent": "slider",
       "getable": true,
@@ -447,10 +494,12 @@
     "juwel_feed_quantity": {
       "type": "number",
       "title": {
-        "en": "Feed quantity"
+        "en": "Feed quantity",
+        "de": "Futtermenge"
       },
       "desc": {
-        "en": "How much the feeder gives per feeding."
+        "en": "How much the feeder gives per feeding.",
+        "de": "Wie viel der Futterautomat pro Fütterung ausgibt."
       },
       "uiComponent": "slider",
       "getable": true,
@@ -464,10 +513,12 @@
     "juwel_flow_rate": {
       "type": "number",
       "title": {
-        "en": "Flow rate"
+        "en": "Flow rate",
+        "de": "Durchfluss"
       },
       "units": {
-        "en": "L/h"
+        "en": "L/h",
+        "de": "l/h"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -478,7 +529,8 @@
     "juwel_last_feed": {
       "type": "string",
       "title": {
-        "en": "Last feeding"
+        "en": "Last feeding",
+        "de": "Letzte Fütterung"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -488,7 +540,8 @@
     "juwel_pump_mode": {
       "type": "string",
       "title": {
-        "en": "Operating mode"
+        "en": "Operating mode",
+        "de": "Betriebsart"
       },
       "uiComponent": "sensor",
       "getable": true,

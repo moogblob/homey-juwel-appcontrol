@@ -3,20 +3,24 @@
     {
       "id": "eccoflow_set_mode",
       "title": {
-        "en": "Set operating mode"
+        "en": "Set operating mode",
+        "de": "Betriebsart einstellen"
       },
       "titleFormatted": {
-        "en": "Set operating mode to [[mode]]"
+        "en": "Set operating mode to [[mode]]",
+        "de": "Betriebsart auf [[mode]] einstellen"
       },
       "args": [
         {
           "type": "autocomplete",
           "name": "mode",
           "placeholder": {
-            "en": "Mode"
+            "en": "Mode",
+            "de": "Modus"
           },
           "title": {
-            "en": "Mode"
+            "en": "Mode",
+            "de": "Modus"
           }
         }
       ]
@@ -24,20 +28,24 @@
     {
       "id": "eccoflow_reset_timer",
       "title": {
-        "en": "Reset maintenance timer"
+        "en": "Reset maintenance timer",
+        "de": "Wartungszeitgeber zurücksetzen"
       },
       "titleFormatted": {
-        "en": "Reset the [[timer]] timer"
+        "en": "Reset the [[timer]] timer",
+        "de": "Zeitgeber [[timer]] zurücksetzen"
       },
       "args": [
         {
           "type": "autocomplete",
           "name": "timer",
           "placeholder": {
-            "en": "Timer"
+            "en": "Timer",
+            "de": "Zeitgeber"
           },
           "title": {
-            "en": "Timer"
+            "en": "Timer",
+            "de": "Zeitgeber"
           }
         }
       ]
