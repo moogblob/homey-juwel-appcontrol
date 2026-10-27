@@ -14,8 +14,18 @@ const DEFAULT_POLL_INTERVAL = 30;
  */
 const PREVIEW_TIMEOUT_S = 3600;
 
-/** Delay before re-reading state after a write, to let the cloud catch up. */
-const SETTLE_MS = 2000;
+/**
+ * Store key holding when the lamp was switched off from Schedule mode (epoch
+ * ms). Switching off pauses the schedule, so while that pause lasts,
+ * switching on resumes the schedule instead of staying in Manual mode.
+ */
+const STORE_OFF_FROM_SCHEDULE_AT = 'offFromScheduleAt';
+
+/**
+ * Delay before re-reading state after a write, to let the cloud catch up. It
+ * records a status about 1.5 s after the write that set it.
+ */
+const SETTLE_MS = 4000;
 
 /** Colour changes arrive one capability at a time; coalesce them into one call. */
 const COLOR_DEBOUNCE_MS = 500;
@@ -53,17 +63,20 @@ export default class HeliaLuxDevice extends Homey.Device {
   private pollTimer: NodeJS.Timeout | null = null;
   private settleTimer: NodeJS.Timeout | null = null;
 
+  /** Writes in progress. A poll meanwhile would show a half-done change, so it is skipped. */
+  private pendingWrites = 0;
+
   /** What the schedule is producing, while mode is "auto" and it could be computed. */
   private schedule: ChannelValues | null = null;
 
   async onInit() {
-    this.registerCapabilityListener('onoff', (value: boolean) => this.setPower(value));
-    this.registerCapabilityListener('dim', (value: number) => this.setBrightness(value));
-    this.registerCapabilityListener('dim.white', (value: number) => this.setWhite(value));
-    this.registerCapabilityListener('helialux_mode', (value: string) => this.setMode(value));
+    this.registerCapabilityListener('onoff', (value: boolean) => this.writing(() => this.setPower(value)));
+    this.registerCapabilityListener('dim', (value: number) => this.writing(() => this.setBrightness(value)));
+    this.registerCapabilityListener('dim.white', (value: number) => this.writing(() => this.setWhite(value)));
+    this.registerCapabilityListener('helialux_mode', (value: string) => this.writing(() => this.setMode(value)));
     this.registerMultipleCapabilityListener(
       ['light_hue', 'light_saturation'],
-      (values: { light_hue?: number; light_saturation?: number }) => this.setColor(values),
+      (values: { light_hue?: number; light_saturation?: number }) => this.writing(() => this.setColor(values)),
       COLOR_DEBOUNCE_MS,
     );
 
@@ -87,19 +100,38 @@ export default class HeliaLuxDevice extends Homey.Device {
 
   // ---- capability listeners ------------------------------------------
 
+  private async writing(write: () => Promise<void>) {
+    this.pendingWrites += 1;
+    try {
+      await write();
+    } finally {
+      this.pendingWrites -= 1;
+    }
+  }
+
   private async setPower(on: boolean) {
     const cloud = this.getCloud();
-    if (on) await cloud.turnOn(this.getDeviceId(), this.manualFromSchedule());
-    else await cloud.turnOff(this.getDeviceId());
+    if (on && this.switchedOffFromSchedule()) {
+      await cloud.resumeScheduleOn(this.getDeviceId(), await this.currentScheduleLight());
+      await this.forgetOffFromSchedule();
+    } else if (on) {
+      await cloud.turnOn(this.getDeviceId(), this.manualFromSchedule());
+    } else {
+      const fromSchedule = this.getCapabilityValue('helialux_mode') === 'auto';
+      await cloud.turnOff(this.getDeviceId(), this.manualFromSchedule());
+      if (fromSchedule) await this.setStoreValue(STORE_OFF_FROM_SCHEDULE_AT, Date.now());
+    }
     this.refreshAfterWrite();
   }
 
   private async setBrightness(value: number) {
+    await this.forgetOffFromSchedule();
     await this.getCloud().setManual(this.getDeviceId(), { ...this.manualFromSchedule(), brightness: toPercent(value) });
     this.refreshAfterWrite();
   }
 
   private async setWhite(value: number) {
+    await this.forgetOffFromSchedule();
     const seed = this.manualFromSchedule();
     await this.getCloud().setManual(this.getDeviceId(), {
       ...seed, channels: { ...seed.channels, white: toPercent(value) },
@@ -118,6 +150,7 @@ export default class HeliaLuxDevice extends Homey.Device {
       ?? (this.getCapabilityValue('light_saturation') as number | null)
       ?? 0;
 
+    await this.forgetOffFromSchedule();
     const seed = this.manualFromSchedule();
     await this.getCloud().setManual(this.getDeviceId(), {
       ...seed, channels: { ...seed.channels, ...hsToRgbPercent({ hue, saturation }) },
@@ -126,10 +159,35 @@ export default class HeliaLuxDevice extends Homey.Device {
   }
 
   private async setMode(mode: string) {
+    await this.forgetOffFromSchedule();
     const cloud = this.getCloud();
-    if (mode === 'auto') await cloud.resumeSchedule(this.getDeviceId());
+    if (mode === 'auto') await cloud.resumeScheduleOn(this.getDeviceId(), await this.currentScheduleLight());
     else await cloud.pauseSchedule(this.getDeviceId(), PREVIEW_TIMEOUT_S);
     this.refreshAfterWrite();
+  }
+
+  /** Whether the lamp was switched off from Schedule mode and that pause still holds. */
+  private switchedOffFromSchedule(): boolean {
+    const at = this.getStoreValue(STORE_OFF_FROM_SCHEDULE_AT);
+    return typeof at === 'number' && Date.now() - at < PREVIEW_TIMEOUT_S * 1000;
+  }
+
+  /** Any other change from Homey means the user wants Manual mode after all. */
+  private async forgetOffFromSchedule() {
+    if (typeof this.getStoreValue(STORE_OFF_FROM_SCHEDULE_AT) === 'number') {
+      await this.unsetStoreValue(STORE_OFF_FROM_SCHEDULE_AT);
+    }
+  }
+
+  /**
+   * The schedule's light right now in manual terms, also while it is paused,
+   * or empty when it cannot be worked out or is dark.
+   */
+  private async currentScheduleLight(): Promise<ManualLightOptions> {
+    const levels = await this.scheduleLevels(await this.getCloud().getState(this.getDeviceId()));
+    if (levels === null) return {};
+    const manual = scheduleAsManual(levels);
+    return manual.channels === undefined ? {} : manual;
   }
 
   /**
@@ -146,6 +204,7 @@ export default class HeliaLuxDevice extends Homey.Device {
   // ---- state ----------------------------------------------------------
 
   private async refresh() {
+    if (this.pendingWrites > 0) return;
     let state: DeviceState;
 
     try {
