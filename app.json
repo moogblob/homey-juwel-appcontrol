@@ -9,18 +9,25 @@
     "local"
   ],
   "name": {
-    "en": "JUWEL AppControl",
-    "de": "JUWEL AppControl",
-    "sv": "JUWEL AppControl"
+    "en": "JUWEL",
+    "de": "JUWEL",
+    "sv": "JUWEL"
   },
   "description": {
-    "en": "Control your JUWEL HeliaLux, JUWEL SmartFeed and JUWEL EccoFlow",
-    "de": "Steuere deine JUWEL HeliaLux, JUWEL SmartFeed und JUWEL EccoFlow",
-    "sv": "Styr din JUWEL HeliaLux, JUWEL SmartFeed och JUWEL EccoFlow"
+    "en": "Bring your aquarium into your smart home.",
+    "de": "Hol dein Aquarium in dein Smart Home.",
+    "sv": "Ta in ditt akvarium i ditt smarta hem."
   },
   "author": {
     "name": "Johan Klintberg",
     "email": "johan.klintberg@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Melle79"
+      }
+    ]
   },
   "support": "https://github.com/moogblob/homey-juwel-appcontrol/issues",
   "source": "https://github.com/moogblob/homey-juwel-appcontrol",
