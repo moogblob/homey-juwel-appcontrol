@@ -18,6 +18,8 @@ export default class HeliaLuxDriver extends Homey.Driver {
    * Lists the HeliaLux lamps on the MyJUWEL account. Only the cloud device id
    * and product id are kept: the account payload also carries the device's
    * aesKey and accessToken, which are secrets and must not be stored here.
+   * Every lamp is named "HeliaLux": the MyJUWEL name carries an "App-Control"
+   * suffix.
    */
   async onPairListDevices() {
     const app = this.homey.app as JuwelApp;
@@ -26,7 +28,7 @@ export default class HeliaLuxDriver extends Homey.Driver {
     return (settings.devices ?? [])
       .filter((device) => device.productId?.startsWith(LIGHTING_PRODUCT_PREFIX))
       .map((device) => ({
-        name: device.name || 'HeliaLux',
+        name: 'HeliaLux',
         data: { id: device.cloudDeviceId },
         store: { productId: device.productId },
       }));
