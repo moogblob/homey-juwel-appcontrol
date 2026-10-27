@@ -1,3 +1,3 @@
-Ta in din JUWEL HeliaLux i Homey. Tänd och släck lampan, ställ in ljusstyrka, färg och vitt, och använd den i Flows precis som vilken lampa som helst. När du är klar växlar du tillbaka till dygnsprofilen från JUWEL-appen, eller låter lampan återgå till den av sig själv efter en timme.
+Visa upp ditt akvarium i full färgprakt när du får gäster, eller ge det ett lugnt blått sken medan du kopplar av, direkt från Homey. Tänd och släck din HeliaLux, ställ in ljusstyrka, färg och vitt, och använd den i Flows precis som vilken lampa som helst. Efter en timme återgår lampan av sig själv till dygnsprofilen från JUWEL-appen, eller så växlar du tillbaka direkt.
 
 Appen ansluter via MyJUWEL-molnet med samma konto som du använder i den officiella JUWEL-appen, så din HeliaLux och Homey behöver internetåtkomst. Det här är en inofficiell community-app som inte är utvecklad eller supportad av JUWEL Aquarium.
