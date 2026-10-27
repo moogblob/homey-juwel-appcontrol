@@ -1,3 +1,3 @@
 Visa upp ditt akvarium i full färgprakt när du får gäster, eller ge det ett lugnt blått sken medan du kopplar av, direkt från Homey. Tänd och släck din HeliaLux, ställ in ljusstyrka, färg och vitt, och använd den i Flows precis som vilken lampa som helst. Efter en timme återgår lampan av sig själv till dygnsprofilen från JUWEL-appen, eller så växlar du tillbaka direkt. Foderautomaten SmartFeed och pumpen EccoFlow stöds också, men har ännu inte testats på riktiga enheter, så håll ett öga på akvariet när du använder dem.
 
-Appen ansluter via MyJUWEL-molnet med samma konto som du använder i den officiella JUWEL-appen, så dina enheter och Homey behöver internetåtkomst. Det här är en inofficiell community-app som inte är utvecklad eller supportad av JUWEL Aquarium.
+Appen ansluter via MyJUWEL-molnet med samma konto som du använder i den officiella JUWEL-appen, så dina enheter och Homey behöver internetåtkomst.
