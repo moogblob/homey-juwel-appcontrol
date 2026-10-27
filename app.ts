@@ -28,7 +28,7 @@ export default class JuwelApp extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('JUWEL AppControl has been initialized');
+    this.log('JUWEL has been initialized');
 
     this.homey.settings.on('set', (key: string) => this.onSettingsChanged(key));
     this.homey.settings.on('unset', (key: string) => this.onSettingsChanged(key));
