@@ -1,7 +1,7 @@
 {
   "settings": {
     "title": "JUWEL",
-    "subtitle": "Melde dich mit deinem MyJUWEL-Konto an, damit Homey deine HeliaLux-, SmartFeed- und EccoFlow-Geräte steuern kann.",
+    "subtitle": "Melde dich mit deinem MyJUWEL-Konto an, damit Homey deine HeliaLux steuern kann.",
     "account": "MyJUWEL-Konto",
     "username": "E-Mail",
     "password": "Passwort",

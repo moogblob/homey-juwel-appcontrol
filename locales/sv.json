@@ -1,7 +1,7 @@
 {
   "settings": {
     "title": "JUWEL",
-    "subtitle": "Logga in med ditt MyJUWEL-konto så att Homey kan styra dina HeliaLux-, SmartFeed- och EccoFlow-enheter.",
+    "subtitle": "Logga in med ditt MyJUWEL-konto så att Homey kan styra din HeliaLux.",
     "account": "MyJUWEL-konto",
     "username": "E-post",
     "password": "Lösenord",
