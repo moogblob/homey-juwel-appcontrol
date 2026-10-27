@@ -13,8 +13,8 @@
     "sv": "Stöd för HeliaLux, redo för App Store."
   },
   "1.0.3": {
-    "en": "The lamp now shows as on while its schedule lights it, and added lamps are simply named HeliaLux.",
-    "de": "Die Leuchte wird jetzt als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Leuchten heißen einfach HeliaLux.",
-    "sv": "Lampan visas nu som på medan schemat tänder den, och tillagda lampor heter helt enkelt HeliaLux."
+    "en": "Switching the lamp off and on from Homey now works reliably and returns it to its schedule, it shows as on while its schedule lights it, and added lamps are simply named HeliaLux.",
+    "de": "Das Aus- und Einschalten der Leuchte über Homey funktioniert jetzt zuverlässig und führt sie zu ihrem Zeitplan zurück, sie wird als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Leuchten heißen einfach HeliaLux.",
+    "sv": "Att släcka och tända lampan från Homey fungerar nu pålitligt och tar den tillbaka till schemat, den visas som på medan schemat tänder den, och tillagda lampor heter helt enkelt HeliaLux."
   }
 }
