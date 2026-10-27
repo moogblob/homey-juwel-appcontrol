@@ -173,27 +173,30 @@ export default class HeliaLuxDevice extends Homey.Device {
     }
     await this.setAvailable();
 
-    if (state.status !== undefined) {
-      await this.setCapabilityValue('onoff', state.status === 'on');
-    }
     if (state.mode !== undefined) {
       await this.setCapabilityValue('helialux_mode', state.mode);
     }
 
     // While the schedule runs the lamp reports its last manual values rather
     // than the live curve, and ignores the master brightness, so in "auto"
-    // mode the levels come from the active profile's curve instead.
+    // mode the levels come from the active profile's curve instead. The same
+    // goes for on/off: a lamp last switched off by hand keeps reporting "off"
+    // while the schedule lights it, so it follows the curve's level too.
     if (state.mode === 'auto') {
       const schedule = await this.scheduleLevels(state);
       this.schedule = schedule;
       // Unknown curve: keep the last shown values rather than the stale manual ones.
       if (schedule === null) return;
       const { brightness, channels } = scheduleAsManual(schedule);
+      await this.setCapabilityValue('onoff', brightness > 0);
       await this.showLevels(brightness, channels ?? {});
       return;
     }
 
     this.schedule = null;
+    if (state.status !== undefined) {
+      await this.setCapabilityValue('onoff', state.status === 'on');
+    }
     await this.showLevels(state.brightness?.percentage, channelLevels(state));
   }
 
