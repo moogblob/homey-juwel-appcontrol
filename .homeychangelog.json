@@ -13,8 +13,8 @@
     "sv": "Testversion med otestat stöd för SmartFeed och EccoFlow."
   },
   "1.1.1": {
-    "en": "The HeliaLux now shows as on while its schedule lights it, and added devices are simply named HeliaLux, SmartFeed or EccoFlow.",
-    "de": "Die HeliaLux wird jetzt als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Geräte heißen einfach HeliaLux, SmartFeed oder EccoFlow.",
-    "sv": "HeliaLux visas nu som på medan schemat tänder den, och tillagda enheter heter helt enkelt HeliaLux, SmartFeed eller EccoFlow."
+    "en": "Switching the HeliaLux off and on from Homey now works reliably and returns it to its schedule, it shows as on while its schedule lights it, and added devices are simply named HeliaLux, SmartFeed or EccoFlow.",
+    "de": "Das Aus- und Einschalten der HeliaLux über Homey funktioniert jetzt zuverlässig und führt sie zu ihrem Zeitplan zurück, sie wird als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Geräte heißen einfach HeliaLux, SmartFeed oder EccoFlow.",
+    "sv": "Att släcka och tända HeliaLux från Homey fungerar nu pålitligt och tar den tillbaka till schemat, den visas som på medan schemat tänder den, och tillagda enheter heter helt enkelt HeliaLux, SmartFeed eller EccoFlow."
   }
 }
