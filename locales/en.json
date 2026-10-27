@@ -15,14 +15,6 @@
   "error": {
     "no_credentials": "Sign in with your MyJUWEL account in the app settings first.",
     "credentials_rejected": "MyJUWEL rejected your credentials. Check them in the app settings.",
-    "device_offline": "The device is not reachable through the MyJUWEL cloud.",
-    "not_supported": "This device does not support that, according to the MyJUWEL product catalogue."
-  },
-  "eccoflow": {
-    "timer": {
-      "clean_pump": "pump cleaning",
-      "impeller": "impeller",
-      "all": "all"
-    }
+    "device_offline": "The device is not reachable through the MyJUWEL cloud."
   }
 }

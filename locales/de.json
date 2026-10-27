@@ -15,14 +15,6 @@
   "error": {
     "no_credentials": "Melde dich zuerst in den App-Einstellungen mit deinem MyJUWEL-Konto an.",
     "credentials_rejected": "MyJUWEL hat deine Zugangsdaten abgelehnt. Prüfe sie in den App-Einstellungen.",
-    "device_offline": "Das Gerät ist über die MyJUWEL-Cloud nicht erreichbar.",
-    "not_supported": "Laut MyJUWEL-Produktkatalog unterstützt dieses Gerät das nicht."
-  },
-  "eccoflow": {
-    "timer": {
-      "clean_pump": "Pumpenreinigung",
-      "impeller": "Impeller",
-      "all": "alle"
-    }
+    "device_offline": "Das Gerät ist über die MyJUWEL-Cloud nicht erreichbar."
   }
 }

@@ -28,7 +28,7 @@ export default class JuwelApp extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('JUWEL AppControl has been initialized');
+    this.log('JUWEL has been initialized');
 
     this.homey.settings.on('set', (key: string) => this.onSettingsChanged(key));
     this.homey.settings.on('unset', (key: string) => this.onSettingsChanged(key));
@@ -110,7 +110,7 @@ export default class JuwelApp extends Homey.App {
 
   /**
    * Lists the account's devices whose catalogue type is one of
-   * `deviceTypeIds` ('light', 'feeder', 'eccoflow', ...). Only the cloud device id and product id
+   * `deviceTypeIds`, e.g. 'light'. Only the cloud device id and product id
    * are kept: the account payload also carries the device's aesKey and
    * accessToken, which are secrets and must not be stored in Homey. Every
    * device is named `name`: the MyJUWEL names carry an "App-Control" suffix.
