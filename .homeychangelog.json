@@ -11,5 +11,10 @@
     "en": "Test version with untested SmartFeed and EccoFlow support.",
     "de": "Testversion mit ungetesteter Unterstützung für SmartFeed und EccoFlow.",
     "sv": "Testversion med otestat stöd för SmartFeed och EccoFlow."
+  },
+  "1.1.1": {
+    "en": "The HeliaLux now shows as on while its schedule lights it, and added devices are simply named HeliaLux, SmartFeed or EccoFlow.",
+    "de": "Die HeliaLux wird jetzt als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Geräte heißen einfach HeliaLux, SmartFeed oder EccoFlow.",
+    "sv": "HeliaLux visas nu som på medan schemat tänder den, och tillagda enheter heter helt enkelt HeliaLux, SmartFeed eller EccoFlow."
   }
 }
