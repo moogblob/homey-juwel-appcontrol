@@ -6,5 +6,10 @@
   },
   "1.0.1": {
     "en": "Build related change"
+  },
+  "1.0.2": {
+    "en": "HeliaLux support, ready for the App Store.",
+    "de": "HeliaLux-Unterstützung, bereit für den App Store.",
+    "sv": "Stöd för HeliaLux, redo för App Store."
   }
 }
