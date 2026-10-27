@@ -6,5 +6,10 @@
   },
   "1.0.1": {
     "en": "Build related change"
+  },
+  "1.1.0": {
+    "en": "Test version with untested SmartFeed and EccoFlow support.",
+    "de": "Testversion mit ungetesteter Unterstützung für SmartFeed und EccoFlow.",
+    "sv": "Testversion med otestat stöd för SmartFeed och EccoFlow."
   }
 }
