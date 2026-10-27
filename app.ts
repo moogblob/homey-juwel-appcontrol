@@ -112,9 +112,10 @@ export default class JuwelApp extends Homey.App {
    * Lists the account's devices whose catalogue type is one of
    * `deviceTypeIds` ('light', 'feeder', 'eccoflow', ...). Only the cloud device id and product id
    * are kept: the account payload also carries the device's aesKey and
-   * accessToken, which are secrets and must not be stored in Homey.
+   * accessToken, which are secrets and must not be stored in Homey. Every
+   * device is named `name`: the MyJUWEL names carry an "App-Control" suffix.
    */
-  async listDevicesOfType(deviceTypeIds: string[], fallbackName: string): Promise<PairDevice[]> {
+  async listDevicesOfType(deviceTypeIds: string[], name: string): Promise<PairDevice[]> {
     const settings = await this.getCloud().getSettings();
     const result: PairDevice[] = [];
 
@@ -131,7 +132,7 @@ export default class JuwelApp extends Homey.App {
       if (!deviceTypeIds.includes(config?.deviceTypeId)) continue;
 
       result.push({
-        name: device.name || fallbackName,
+        name,
         data: { id: device.cloudDeviceId },
         store: { productId: device.productId },
       });
