@@ -3,8 +3,7 @@ import type JuwelApp from '../../app.js';
 
 /**
  * Product id prefix the MyJUWEL cloud uses for lamps, e.g.
- * "@juwel.lighting.helialux1". Other product families on the same account
- * (SmartFeed, EccoFlow) get their own drivers.
+ * "@juwel.lighting.helialux1".
  */
 const LIGHTING_PRODUCT_PREFIX = '@juwel.lighting.';
 
