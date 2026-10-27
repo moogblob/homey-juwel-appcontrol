@@ -31,6 +31,13 @@ export const API_HOST = 'https://app-api.prod.qconnex.io';
 export const ENVIRONMENT_NAME = 'Juwel';
 const TIMEOUT_MS = 20_000;
 
+/**
+ * Gap between the two status writes of turnOff. Written back to back, the
+ * lamp's answer to "on" can reach the cloud after "off", which then records
+ * "on" for a lamp that is off.
+ */
+const STATUS_GAP_MS = 1500;
+
 interface LoginResponse {
   accountToken?: string;
   accessToken?: string;
@@ -45,6 +52,17 @@ function clamp(n: number, min: number, max: number): number {
 /** Percent (0..100) -> the cloud's 0..255 channel scale. */
 function pctToByte(pct: number): number {
   return Math.round((clamp(pct, 0, 100) / 100) * 255);
+}
+
+/**
+ * The cloud only passes a field on to the lamp when it differs from what the
+ * cloud last recorded, and that record goes stale when the lamp is changed
+ * elsewhere (e.g. its manual colour). A value equal to the record is moved
+ * one step so it still reaches the lamp; one step is not visible.
+ */
+function unlikeRecord(value: number, recorded: number | undefined, max: number): number {
+  if (value !== recorded) return value;
+  return value > 0 ? value - 1 : Math.min(max, value + 1);
 }
 
 /** The cloud's 0..255 channel scale -> percent (0..100). */
@@ -255,6 +273,10 @@ export class JuwelCloud {
    * When the mode is unknown (e.g. the cloud reports the device offline and
    * returns no trait values) the schedule is paused anyway: pausing twice is
    * harmless, a swallowed manual command is not.
+   *
+   * Brightness and channel values equal to the cloud's record are moved one
+   * step so the cloud does not drop them. `status` cannot be moved that way:
+   * one equal to the record never reaches the lamp, see turnOn and turnOff.
    */
   async setManual(cloudDeviceId: string, options: ManualLightOptions, current?: DeviceState): Promise<void> {
     const state = current ?? (await this.getState(cloudDeviceId));
@@ -263,7 +285,8 @@ export class JuwelCloud {
     const fields: StatePayload = {};
     if (options.status !== undefined) fields.status = options.status;
     if (options.brightness !== undefined) {
-      fields.brightness = { percentage: Math.round(clamp(options.brightness, 0, 100)) };
+      const percentage = Math.round(clamp(options.brightness, 0, 100));
+      fields.brightness = { percentage: unlikeRecord(percentage, state.brightness?.percentage, 100) };
     }
 
     const ch = options.channels ?? {};
@@ -276,21 +299,60 @@ export class JuwelCloud {
         }
         return v;
       };
-      fields.color = { red: pctToByte(pick('red')), green: pctToByte(pick('green')), blue: pctToByte(pick('blue')) };
+      const byte = (name: 'red' | 'green' | 'blue') => unlikeRecord(pctToByte(pick(name)), state.color?.[name], 255);
+      fields.color = { red: byte('red'), green: byte('green'), blue: byte('blue') };
     }
-    if (ch.white !== undefined) fields.white = { value: pctToByte(ch.white) };
+    if (ch.white !== undefined) fields.white = { value: unlikeRecord(pctToByte(ch.white), state.white?.value, 255) };
 
     if (Object.keys(fields).length > 0) await this.setState(cloudDeviceId, fields);
   }
 
-  /** Turn the light on, optionally with brightness / channels in percent. Pauses the schedule if needed. */
-  turnOn(cloudDeviceId: string, options: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
-    return this.setManual(cloudDeviceId, { ...options, status: 'on' });
+  /**
+   * Turn the light on, optionally with brightness / channels in percent.
+   * Pauses the schedule if needed.
+   *
+   * When the cloud already records "on" the status would be dropped, but a
+   * brightness write also switches the lamp on, so one is always included.
+   */
+  async turnOn(cloudDeviceId: string, options: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
+    const state = await this.getState(cloudDeviceId);
+    const recorded = state.brightness?.percentage;
+    const brightness = options.brightness ?? (recorded !== undefined && recorded > 0 ? recorded : 100);
+    await this.setManual(cloudDeviceId, { ...options, brightness, status: 'on' }, state);
   }
 
-  /** Turn the light off. Pauses the schedule if needed. */
-  turnOff(cloudDeviceId: string): Promise<void> {
-    return this.setManual(cloudDeviceId, { status: 'off' });
+  /**
+   * Resume the schedule so that the next turnOff is clean. A recorded "off"
+   * would make turnOff switch the lamp "on" first, a visible step just before
+   * it goes dark, so the lamp is switched "on" here instead, with `light`
+   * (the schedule's light now), just before the schedule takes over.
+   */
+  async resumeScheduleOn(cloudDeviceId: string, light: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
+    const state = await this.getState(cloudDeviceId);
+    if (state.status !== 'on') await this.setManual(cloudDeviceId, { ...light, status: 'on' }, state);
+    await this.resumeSchedule(cloudDeviceId);
+  }
+
+  /**
+   * Turn the light off. Pauses the schedule if needed.
+   *
+   * The recorded status is the lamp's manual on/off flag, which a running
+   * schedule ignores: a lamp lit by its schedule can read "off", and writing
+   * "off" again would be dropped. It is then switched "on" first, with
+   * `light` (the light the lamp shows now) so that step is not visible;
+   * without it the lamp briefly shows its manual colour.
+   */
+  async turnOff(cloudDeviceId: string, light: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
+    const state = await this.getState(cloudDeviceId);
+    if (state.status === 'on') {
+      await this.setManual(cloudDeviceId, { status: 'off' }, state);
+      return;
+    }
+    await this.setManual(cloudDeviceId, { ...light, status: 'on' }, state);
+    await new Promise((resolve) => {
+      setTimeout(resolve, STATUS_GAP_MS);
+    });
+    await this.setManual(cloudDeviceId, { status: 'off' }, { ...state, mode: 'rgb', status: 'on' });
   }
 
   /** Assign profile `slot` to a weekday (0 = Sunday .. 6 = Saturday). */
