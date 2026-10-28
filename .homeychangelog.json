@@ -16,5 +16,10 @@
     "en": "Switching the lamp off and on from Homey now works reliably and returns it to its schedule, it shows as on while its schedule lights it, and added lamps are simply named HeliaLux.",
     "de": "Das Aus- und Einschalten der Leuchte über Homey funktioniert jetzt zuverlässig und führt sie zu ihrem Zeitplan zurück, sie wird als eingeschaltet angezeigt, während ihr Zeitplan sie leuchten lässt, und hinzugefügte Leuchten heißen einfach HeliaLux.",
     "sv": "Att släcka och tända lampan från Homey fungerar nu pålitligt och tar den tillbaka till schemat, den visas som på medan schemat tänder den, och tillagda lampor heter helt enkelt HeliaLux."
+  },
+  "1.0.4": {
+    "en": "Homey now controls the HeliaLux directly over your home network instead of through the MyJUWEL cloud, so it reacts faster and works without internet. Added lamps keep their MyJUWEL names, so several lamps can be told apart.",
+    "de": "Homey steuert die HeliaLux jetzt direkt über dein Heimnetz statt über die MyJUWEL-Cloud, reagiert dadurch schneller und funktioniert auch ohne Internet. Hinzugefügte Leuchten behalten ihren MyJUWEL-Namen, damit sich mehrere Leuchten unterscheiden lassen.",
+    "sv": "Homey styr nu HeliaLux direkt via ditt hemnätverk i stället för via MyJUWEL-molnet, så den reagerar snabbare och fungerar utan internet. Tillagda lampor behåller sina MyJUWEL-namn, så att flera lampor går att skilja åt."
   }
 }

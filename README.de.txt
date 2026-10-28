@@ -1,3 +1,3 @@
 Zeig dein Aquarium in voller Farbenpracht, wenn Gäste kommen, oder tauche es in ein ruhiges Blau, während du entspannst, direkt aus Homey. Schalte deine HeliaLux ein und aus, stelle Helligkeit, Farbe und Weißanteil ein und nutze sie in Flows wie jede andere Leuchte. Nach einer Stunde kehrt die Leuchte von selbst zum Tagesprofil aus der JUWEL App zurück, oder du wechselst sofort zurück.
 
-Die App verbindet sich über die MyJUWEL-Cloud mit demselben Konto, das du in der offiziellen JUWEL App nutzt, deine HeliaLux und Homey brauchen also Internetzugang.
+Die App steuert deine HeliaLux direkt über dein Heimnetz. Melde dich einmal mit dem Konto an, das du in der offiziellen JUWEL App nutzt, damit Homey deine Leuchten findet. Danach braucht Homey die MyJUWEL-Cloud nicht mehr und funktioniert auch, wenn das Internet ausfällt. Homey und die Leuchte müssen im selben Netzwerk sein.
