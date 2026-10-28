@@ -225,10 +225,11 @@ export interface ProductConfig {
 export interface HeliaLuxState {
   status?: 'on' | 'off';
   /**
-   * NOTE: in 'auto' mode the device does not report live values. brightness,
+   * NOTE: in 'auto' mode the cloud does not report live values. brightness,
    * color and white stay frozen at the last manual value while the lamp
-   * follows the profile curve; compute the current value from the active
-   * Preset's timeEvents instead. Verified on hardware 2026-09-28.
+   * follows the profile curve. Asked locally, the lamp does report the
+   * curve's live color and white, but brightness stays the manual value.
+   * Verified on hardware 2026-09-28 (cloud) and 2026-10-28 (local).
    * The master brightness does not scale the profile either: with brightness
    * 80 and a profile at 100 on all channels the lamp runs at 100. Verified on
    * hardware 2026-10-18.
@@ -269,18 +270,13 @@ export interface HeliaLuxState {
 
 /**
  * Manual light values, all in percent (0..100) like the Preset timeEvents.
- * Omitted fields are left unchanged on the device. The client converts to
- * the cloud's wire scales (colour and white 0..255) internally.
+ * On the wire, colour and white use 0..255 (see pctToByte).
  */
 export interface ManualLightOptions {
   status?: 'on' | 'off';
   /** Master dimmer over all four channels, 0..100. */
   brightness?: number;
-  /**
-   * Per-channel levels, 0..100 each. The cloud writes red/green/blue as one
-   * object, so a partial red/green/blue update is completed from the current
-   * device state before sending.
-   */
+  /** Per-channel levels, 0..100 each. */
   channels?: Partial<ChannelValues>;
 }
 
