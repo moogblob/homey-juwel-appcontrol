@@ -15,7 +15,6 @@ import type {
   FeederPreset,
   HeliaLuxState,
   JuwelCloudOptions,
-  ManualLightOptions,
   Preset,
   ProductConfig,
   Settings,
@@ -31,13 +30,6 @@ export const API_HOST = 'https://app-api.prod.qconnex.io';
 export const ENVIRONMENT_NAME = 'Juwel';
 const TIMEOUT_MS = 20_000;
 
-/**
- * Gap between the two status writes of turnOff. Written back to back, the
- * lamp's answer to "on" can reach the cloud after "off", which then records
- * "on" for a lamp that is off.
- */
-const STATUS_GAP_MS = 1500;
-
 interface LoginResponse {
   accountToken?: string;
   accessToken?: string;
@@ -49,23 +41,12 @@ function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
 }
 
-/** Percent (0..100) -> the cloud's 0..255 channel scale. */
-function pctToByte(pct: number): number {
+/** Percent (0..100) -> the lamp's 0..255 channel scale. */
+export function pctToByte(pct: number): number {
   return Math.round((clamp(pct, 0, 100) / 100) * 255);
 }
 
-/**
- * The cloud only passes a field on to the lamp when it differs from what the
- * cloud last recorded, and that record goes stale when the lamp is changed
- * elsewhere (e.g. its manual colour). A value equal to the record is moved
- * one step so it still reaches the lamp; one step is not visible.
- */
-function unlikeRecord(value: number, recorded: number | undefined, max: number): number {
-  if (value !== recorded) return value;
-  return value > 0 ? value - 1 : Math.min(max, value + 1);
-}
-
-/** The cloud's 0..255 channel scale -> percent (0..100). */
+/** The lamp's 0..255 channel scale -> percent (0..100). */
 function byteToPct(byte: number): number {
   return Math.round((clamp(byte, 0, 255) / 255) * 100);
 }
@@ -73,8 +54,8 @@ function byteToPct(byte: number): number {
 /**
  * Channel levels of a reported state in percent (0..100), the same scale as
  * Preset timeEvents and ManualLightOptions. Channels the state does not
- * report are omitted. Note that in "auto" mode these are the last manual
- * values, not the live curve; see HeliaLuxState.
+ * report are omitted. In "auto" mode the lamp itself reports the live
+ * schedule, the cloud the last manual values; see HeliaLuxState.
  */
 export function channelLevels(state: HeliaLuxState): Partial<ChannelValues> {
   const out: Partial<ChannelValues> = {};
@@ -85,39 +66,6 @@ export function channelLevels(state: HeliaLuxState): Partial<ChannelValues> {
   }
   if (state.white) out.white = byteToPct(state.white.value);
   return out;
-}
-
-/**
- * The cloud preset id of the profile the lamp is running, or null when the
- * state does not say. `presets` maps the device's slots to cloud preset ids.
- */
-export function activePresetId(state: HeliaLuxState): string | null {
-  if (state.active_preset === undefined) return null;
-  return state.presets?.find((p) => p.id === state.active_preset)?.name ?? null;
-}
-
-/**
- * Channel levels in percent (0..100) that a profile's daily curve gives at
- * `minute` after midnight, interpolated linearly between its time events and
- * wrapping around midnight. Returns null for a profile without time events.
- */
-export function presetLevelsAt(preset: Preset, minute: number): ChannelValues | null {
-  const events = [...preset.timeEvents].sort((a, b) => a.time - b.time);
-  if (events.length === 0) return null;
-
-  // The last event at or before `minute`, else yesterday's last one.
-  let i = events.length - 1;
-  for (let j = 0; j < events.length && events[j].time <= minute; j++) i = j;
-
-  const prev = events[i];
-  const next = events[(i + 1) % events.length];
-  const span = (next.time - prev.time + 1440) % 1440 || 1440;
-  const t = ((minute - prev.time + 1440) % 1440) / span;
-
-  const lerp = (name: keyof ChannelValues) => prev.value[name] + (next.value[name] - prev.value[name]) * t;
-  return {
-    red: lerp('red'), green: lerp('green'), blue: lerp('blue'), white: lerp('white'),
-  };
 }
 
 export class JuwelCloud {
@@ -258,101 +206,6 @@ export class JuwelCloud {
   /** Resume the automatic schedule. */
   resumeSchedule(cloudDeviceId: string): Promise<unknown> {
     return this.command(cloudDeviceId, { type: 'preset', action: 'resume' });
-  }
-
-  // ---- light convenience -------------------------------------------
-
-  /**
-   * Set manual light values, all in percent (0..100). While the schedule
-   * runs (mode "auto") the lamp ignores manual writes, so the schedule is
-   * paused first (preview mode, default 1 h), exactly as the app does.
-   *
-   * Pass `current` if you already have a fresh state to save a round trip;
-   * otherwise it is fetched. The state is also used to complete a partial
-   * red/green/blue update, since the cloud writes those three as one object.
-   * When the mode is unknown (e.g. the cloud reports the device offline and
-   * returns no trait values) the schedule is paused anyway: pausing twice is
-   * harmless, a swallowed manual command is not.
-   *
-   * Brightness and channel values equal to the cloud's record are moved one
-   * step so the cloud does not drop them. `status` cannot be moved that way:
-   * one equal to the record never reaches the lamp, see turnOn and turnOff.
-   */
-  async setManual(cloudDeviceId: string, options: ManualLightOptions, current?: DeviceState): Promise<void> {
-    const state = current ?? (await this.getState(cloudDeviceId));
-    if (state.mode === undefined || state.mode === 'auto') await this.pauseSchedule(cloudDeviceId);
-
-    const fields: StatePayload = {};
-    if (options.status !== undefined) fields.status = options.status;
-    if (options.brightness !== undefined) {
-      const percentage = Math.round(clamp(options.brightness, 0, 100));
-      fields.brightness = { percentage: unlikeRecord(percentage, state.brightness?.percentage, 100) };
-    }
-
-    const ch = options.channels ?? {};
-    if (ch.red !== undefined || ch.green !== undefined || ch.blue !== undefined) {
-      const now = channelLevels(state);
-      const pick = (name: 'red' | 'green' | 'blue'): number => {
-        const v = ch[name] ?? now[name];
-        if (v === undefined) {
-          throw new JuwelApiError(`channels.${name} not given and device state has no colour to fall back on`);
-        }
-        return v;
-      };
-      const byte = (name: 'red' | 'green' | 'blue') => unlikeRecord(pctToByte(pick(name)), state.color?.[name], 255);
-      fields.color = { red: byte('red'), green: byte('green'), blue: byte('blue') };
-    }
-    if (ch.white !== undefined) fields.white = { value: unlikeRecord(pctToByte(ch.white), state.white?.value, 255) };
-
-    if (Object.keys(fields).length > 0) await this.setState(cloudDeviceId, fields);
-  }
-
-  /**
-   * Turn the light on, optionally with brightness / channels in percent.
-   * Pauses the schedule if needed.
-   *
-   * When the cloud already records "on" the status would be dropped, but a
-   * brightness write also switches the lamp on, so one is always included.
-   */
-  async turnOn(cloudDeviceId: string, options: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
-    const state = await this.getState(cloudDeviceId);
-    const recorded = state.brightness?.percentage;
-    const brightness = options.brightness ?? (recorded !== undefined && recorded > 0 ? recorded : 100);
-    await this.setManual(cloudDeviceId, { ...options, brightness, status: 'on' }, state);
-  }
-
-  /**
-   * Resume the schedule so that the next turnOff is clean. A recorded "off"
-   * would make turnOff switch the lamp "on" first, a visible step just before
-   * it goes dark, so the lamp is switched "on" here instead, with `light`
-   * (the schedule's light now), just before the schedule takes over.
-   */
-  async resumeScheduleOn(cloudDeviceId: string, light: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
-    const state = await this.getState(cloudDeviceId);
-    if (state.status !== 'on') await this.setManual(cloudDeviceId, { ...light, status: 'on' }, state);
-    await this.resumeSchedule(cloudDeviceId);
-  }
-
-  /**
-   * Turn the light off. Pauses the schedule if needed.
-   *
-   * The recorded status is the lamp's manual on/off flag, which a running
-   * schedule ignores: a lamp lit by its schedule can read "off", and writing
-   * "off" again would be dropped. It is then switched "on" first, with
-   * `light` (the light the lamp shows now) so that step is not visible;
-   * without it the lamp briefly shows its manual colour.
-   */
-  async turnOff(cloudDeviceId: string, light: Omit<ManualLightOptions, 'status'> = {}): Promise<void> {
-    const state = await this.getState(cloudDeviceId);
-    if (state.status === 'on') {
-      await this.setManual(cloudDeviceId, { status: 'off' }, state);
-      return;
-    }
-    await this.setManual(cloudDeviceId, { ...light, status: 'on' }, state);
-    await new Promise((resolve) => {
-      setTimeout(resolve, STATUS_GAP_MS);
-    });
-    await this.setManual(cloudDeviceId, { status: 'off' }, { ...state, mode: 'rgb', status: 'on' });
   }
 
   /** Assign profile `slot` to a weekday (0 = Sunday .. 6 = Saturday). */

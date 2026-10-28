@@ -36,7 +36,7 @@
     "local"
   ],
   "connectivity": [
-    "cloud"
+    "lan"
   ],
   "images": {
     "small": "{{driverAssetsPath}}/images/small.png",
@@ -66,9 +66,9 @@
         "sv": "Uppdateringsintervall"
       },
       "hint": {
-        "en": "How often Homey asks the MyJUWEL cloud for the lamp's state, in seconds.",
-        "de": "Wie oft Homey den Zustand der Leuchte in der MyJUWEL-Cloud abfragt, in Sekunden.",
-        "sv": "Hur ofta Homey frågar MyJUWEL-molnet om lampans status, i sekunder."
+        "en": "How often Homey asks the lamp for its state, in seconds.",
+        "de": "Wie oft Homey die Leuchte nach ihrem Zustand fragt, in Sekunden.",
+        "sv": "Hur ofta Homey frågar lampan om dess status, i sekunder."
       },
       "value": 30,
       "min": 10,

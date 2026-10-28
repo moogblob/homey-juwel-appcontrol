@@ -15,6 +15,7 @@
   "error": {
     "no_credentials": "Melde dich zuerst in den App-Einstellungen mit deinem MyJUWEL-Konto an.",
     "credentials_rejected": "MyJUWEL hat deine Zugangsdaten abgelehnt. Prüfe sie in den App-Einstellungen.",
-    "device_offline": "Das Gerät ist über die MyJUWEL-Cloud nicht erreichbar."
+    "device_offline": "Die Leuchte antwortet im lokalen Netzwerk nicht. Homey und die Leuchte müssen im selben Netzwerk sein.",
+    "repair_needed": "Entferne diese Leuchte und füge sie erneut hinzu, damit Homey sie im lokalen Netzwerk steuern kann."
   }
 }
