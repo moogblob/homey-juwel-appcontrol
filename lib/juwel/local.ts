@@ -2,8 +2,8 @@
  * Local (LAN) client for JUWEL lamps, which run Klyqa firmware. See
  * docs/local-protocol.md for the protocol.
  *
- * In short: a `QCX-SYN` broadcast on UDP 2222 makes every lamp connect back
- * to us on TCP 3333. Each connection starts with a plaintext ident naming the
+ * In short: a `QCX-SYN;<unit id>` broadcast on UDP 2222 makes that lamp
+ * connect back to us on TCP 3333. Each connection starts with a plaintext ident naming the
  * lamp, then both sides swap 8-byte nonces and switch to AES-128-CBC with the
  * lamp's aesKey. One connection per lamp is kept open and carries one request
  * at a time.
@@ -19,7 +19,11 @@ export { JuwelLocalError, normalizeUnitId, type LocalMessage };
 
 const DISCOVERY_PORT = 2222;
 const CONNECT_PORT = 3333;
-const SYN = 'QCX-SYN';
+/**
+ * The SYN names the lamp: a plain `QCX-SYN` is ignored by every lamp except
+ * the one addressed last, by us or by the MyJUWEL app.
+ */
+const synFor = (unitId: string) => `QCX-SYN;${unitId}`;
 
 /** How often the SYN is repeated while a lamp is awaited. The phone app does the same. */
 const SYN_INTERVAL_MS = 1000;
@@ -153,7 +157,7 @@ export class JuwelLocal extends EventEmitter {
       const unitId = lamp.unitId!;
       const previous = this.lamps.get(unitId);
       this.lamps.set(unitId, lamp);
-      // A lamp dials in again on every SYN; the newest connection wins.
+      // A lamp dials in again on every SYN for it; the newest connection wins.
       if (previous && previous !== lamp) previous.close();
       this.log(`Connected to lamp ${unitId} at ${lamp.address}`);
 
@@ -172,20 +176,27 @@ export class JuwelLocal extends EventEmitter {
     });
   }
 
-  /** Broadcast SYNs while any lamp is awaited, and stop once none is. */
+  /** Broadcast a SYN for each awaited lamp, and stop once none is awaited. */
   private syncSyn() {
-    const awaited = [...this.waiting.values()].some((waiters) => waiters.size > 0);
-    if (!awaited) {
+    if (this.awaitedLamps().length === 0) {
       this.stopSyn();
       return;
     }
     if (this.synTimer !== null) return;
 
-    const send = () => this.udp?.send(SYN, DISCOVERY_PORT, '255.255.255.255', (err) => {
-      if (err) this.log('Could not broadcast the lamp discovery:', err.message);
-    });
+    const send = () => {
+      for (const unitId of this.awaitedLamps()) {
+        this.udp?.send(synFor(unitId), DISCOVERY_PORT, '255.255.255.255', (err) => {
+          if (err) this.log('Could not broadcast the lamp discovery:', err.message);
+        });
+      }
+    };
     send();
     this.synTimer = setInterval(send, SYN_INTERVAL_MS);
+  }
+
+  private awaitedLamps(): string[] {
+    return [...this.waiting].filter(([, waiters]) => waiters.size > 0).map(([unitId]) => unitId);
   }
 
   private stopSyn() {
