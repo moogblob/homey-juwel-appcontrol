@@ -55,6 +55,11 @@ export default class LampConnection extends EventEmitter {
     });
   }
 
+  /** False once the connection is closed or being closed. */
+  get isOpen(): boolean {
+    return !this.socket.destroyed;
+  }
+
   get address(): string {
     return this.socket.remoteAddress?.replace(/^::ffff:/, '') ?? '?';
   }

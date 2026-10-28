@@ -68,10 +68,22 @@ export class JuwelLocal extends EventEmitter {
    * Send one request to a lamp and return its reply, connecting first when
    * needed. A reply that reports errors, such as a manual write while the
    * schedule runs, is rejected with them.
+   *
+   * A lamp now and then closes its connection while a request is under way.
+   * Requests carry absolute values, so it is sent once more on a new
+   * connection.
    */
   async request(unitId: string, message: object): Promise<LocalMessage> {
-    const lamp = await this.connection(normalizeUnitId(unitId));
-    const reply = await lamp.send(message);
+    const id = normalizeUnitId(unitId);
+    const lamp = await this.connection(id);
+    let reply: LocalMessage;
+    try {
+      reply = await lamp.send(message);
+    } catch (err) {
+      if (!(err instanceof JuwelLocalError)) throw err;
+      this.log(`Retrying a request to lamp ${id}: ${err.message}`);
+      reply = await (await this.connection(id)).send(message);
+    }
     if (Array.isArray(reply.error) && reply.error.length > 0) {
       throw new JuwelLocalError(`The lamp refused the request: ${reply.error.join('; ')}`);
     }
@@ -91,7 +103,7 @@ export class JuwelLocal extends EventEmitter {
 
   private async connection(unitId: string): Promise<LampConnection> {
     const open = this.lamps.get(unitId);
-    if (open) return open;
+    if (open?.isOpen) return open;
     if (!this.keys.has(unitId)) throw new JuwelLocalError(`No key for lamp ${unitId}`);
 
     await this.start();
