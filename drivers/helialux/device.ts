@@ -123,7 +123,7 @@ export default class HeliaLuxDevice extends Homey.Device {
     this.refresh().catch((err) => this.error('First refresh failed:', err));
     this.startPolling();
 
-    this.log(`HeliaLux ${this.getName()} has been initialized`);
+    this.log(`"${this.getName()}" has been initialized`);
   }
 
   async onSettings({ changedKeys }: { changedKeys: string[] }) {
