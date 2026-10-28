@@ -118,7 +118,9 @@ export default class HeliaLuxDevice extends Homey.Device {
       COLOR_DEBOUNCE_MS,
     );
 
-    await this.refresh();
+    // Not awaited: finding a lamp that is off or unplugged takes up to 10 s,
+    // which would hold up the app's start.
+    this.refresh().catch((err) => this.error('First refresh failed:', err));
     this.startPolling();
 
     this.log(`HeliaLux ${this.getName()} has been initialized`);
