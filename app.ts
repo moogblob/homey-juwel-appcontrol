@@ -1,11 +1,9 @@
 import Homey from 'homey';
-import { JuwelCloud, type Preset, type ProductConfig } from './lib/juwel/client.js';
+import { JuwelCloud, type ProductConfig } from './lib/juwel/client.js';
+import { JuwelLocal } from './lib/juwel/local.js';
 
 export const SETTING_USERNAME = 'username';
 export const SETTING_PASSWORD = 'password';
-
-/** How long lighting profiles are reused before an edit in the MyJUWEL app is picked up. */
-const PRESETS_TTL_MS = 60 * 60 * 1000;
 
 export type Credentials = {
   username: string;
@@ -15,14 +13,14 @@ export type Credentials = {
 export type PairDevice = {
   name: string;
   data: { id: string };
-  store: { productId: string };
+  store: { productId: string; aesKey?: string };
 };
 
 export default class JuwelApp extends Homey.App {
 
   private cloud: JuwelCloud | null = null;
+  private local: JuwelLocal | null = null;
   private productConfigs = new Map<string, Promise<ProductConfig>>();
-  private presets: { fetchedAt: number; list: Promise<Preset[]> } | null = null;
 
   /**
    * onInit is called when the app is initialized.
@@ -36,6 +34,11 @@ export default class JuwelApp extends Homey.App {
     if (this.getCredentials() === null) {
       this.log('No MyJUWEL credentials configured, please add them in the app settings');
     }
+  }
+
+  async onUninit() {
+    this.local?.close();
+    this.local = null;
   }
 
   /**
@@ -74,6 +77,15 @@ export default class JuwelApp extends Homey.App {
   }
 
   /**
+   * The shared local-network client. Lamps are controlled over the LAN once
+   * paired; the cloud is only needed to look up their keys while pairing.
+   */
+  getLocal(): JuwelLocal {
+    this.local ??= new JuwelLocal((...args) => this.log(...args));
+    return this.local;
+  }
+
+  /**
    * The product catalogue entry (traits with msg_key and value schema) for a
    * product id. It does not change at runtime, so it is fetched once per
    * product; a failed fetch is forgotten so the next call retries.
@@ -86,26 +98,6 @@ export default class JuwelApp extends Homey.App {
       this.productConfigs.set(productId, config);
     }
     return config;
-  }
-
-  /**
-   * A lighting profile with its daily curve, by cloud preset id. Profiles are
-   * shared by every lamp on the account and change rarely, so the list is
-   * reused for PRESETS_TTL_MS, or refetched sooner when `id` is not in it.
-   */
-  async getPreset(id: string): Promise<Preset | null> {
-    const cache = this.presets;
-    if (cache !== null && Date.now() - cache.fetchedAt < PRESETS_TTL_MS) {
-      const cached = (await cache.list.catch((): Preset[] => [])).find((p) => p.id === id);
-      if (cached) return cached;
-    }
-
-    const list = this.getCloud().getPresets();
-    this.presets = { fetchedAt: Date.now(), list };
-    list.catch(() => {
-      if (this.presets?.list === list) this.presets = null;
-    });
-    return (await list).find((p) => p.id === id) ?? null;
   }
 
   /**
@@ -145,7 +137,6 @@ export default class JuwelApp extends Homey.App {
     // Drop the cached client so the next call logs in with the new credentials.
     this.cloud = null;
     this.productConfigs.clear();
-    this.presets = null;
     this.log(`MyJUWEL credentials changed (${key})`);
   }
 

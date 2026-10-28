@@ -161,9 +161,8 @@ request id. Send one request at a time and wait for its reply.
 ```
 
 - `mode`: `auto` while the schedule runs, `rgb` when paused or in manual.
-- `color`, `white`, `brightness` and `status` are the stored **manual**
-  settings. While the schedule runs, they say nothing about the light the
-  schedule is showing.
+- While the schedule runs, `color` and `white` are the schedule's live
+  output; `brightness` and `status` are the manual settings.
 - The reported colour is not always what the lamp outputs: a lamp reported
   white 255/255/255 while showing its manual red. Writing the colour
   explicitly fixed it.
@@ -187,8 +186,7 @@ shows the old values:
 ```
 
 While paused, writes take effect within about a second (`transitionTime`
-1000 ms). Unlike the cloud, the lamp does not drop a write that repeats the
-current value.
+1000 ms).
 
 ### Pausing and resuming the schedule
 

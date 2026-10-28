@@ -15,6 +15,7 @@
   "error": {
     "no_credentials": "Sign in with your MyJUWEL account in the app settings first.",
     "credentials_rejected": "MyJUWEL rejected your credentials. Check them in the app settings.",
-    "device_offline": "The device is not reachable through the MyJUWEL cloud."
+    "device_offline": "The lamp does not answer on the local network. Homey and the lamp must be on the same network.",
+    "repair_needed": "Remove this lamp and add it again so Homey can control it on the local network."
   }
 }

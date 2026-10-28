@@ -15,6 +15,7 @@
   "error": {
     "no_credentials": "Logga först in med ditt MyJUWEL-konto i appens inställningar.",
     "credentials_rejected": "MyJUWEL godkände inte dina inloggningsuppgifter. Kontrollera dem i appens inställningar.",
-    "device_offline": "Enheten går inte att nå via MyJUWEL-molnet."
+    "device_offline": "Lampan svarar inte i det lokala nätverket. Homey och lampan måste vara i samma nätverk.",
+    "repair_needed": "Ta bort lampan och lägg till den igen så att Homey kan styra den i det lokala nätverket."
   }
 }
