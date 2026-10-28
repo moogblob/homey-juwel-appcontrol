@@ -127,6 +127,29 @@
             "de": "s",
             "sv": "s"
           }
+        },
+        {
+          "id": "transition_time",
+          "type": "number",
+          "label": {
+            "en": "Fade time",
+            "de": "Überblendzeit",
+            "sv": "Övertoningstid"
+          },
+          "hint": {
+            "en": "How long the lamp takes to fade to a new light set from Homey, such as on, off, brightness or colour, in seconds. 0 changes it at once.",
+            "de": "Wie lange die Leuchte braucht, um zu einem in Homey eingestellten Licht überzublenden, etwa beim Ein- und Ausschalten oder bei Helligkeit und Farbe, in Sekunden. Bei 0 wechselt sie sofort.",
+            "sv": "Hur lång tid lampan tar på sig att tona över till ett ljus som ställts in från Homey, till exempel på, av, ljusstyrka eller färg, i sekunder. Med 0 byter den direkt."
+          },
+          "value": 1,
+          "min": 0,
+          "max": 60,
+          "step": 0.1,
+          "units": {
+            "en": "s",
+            "de": "s",
+            "sv": "s"
+          }
         }
       ],
       "id": "helialux"

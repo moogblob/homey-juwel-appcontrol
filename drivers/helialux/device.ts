@@ -22,6 +22,9 @@ const STORE_OFF_FROM_SCHEDULE_AT = 'offFromScheduleAt';
 /** Store key holding the manual light (a `Light`) the lamp had when Homey switched it off. */
 const STORE_LAST_LIGHT = 'lastLight';
 
+/** Fade time when the setting is missing, in seconds. The lamp's own default. */
+const DEFAULT_TRANSITION_S = 1;
+
 /** Failed polls in a row before the lamp is shown as unavailable. */
 const OFFLINE_AFTER_FAILURES = 2;
 
@@ -269,7 +272,10 @@ export default class HeliaLuxDevice extends Homey.Device {
     await this.request({ type: 'preset', action: 'pause', timeout: PREVIEW_TIMEOUT_S });
   }
 
-  /** Send a whole manual light: the channels scaled by its brightness, at master brightness 100. */
+  /**
+   * Send a whole manual light: the channels scaled by its brightness, at
+   * master brightness 100, fading over the device's fade time.
+   */
   private async sendLight(light: Light) {
     const brightness = Math.min(100, Math.max(0, light.brightness));
     const level = (pct: number) => pctToByte((pct * brightness) / 100);
@@ -279,7 +285,14 @@ export default class HeliaLuxDevice extends Homey.Device {
       brightness: { percentage: 100 },
       color: { red: level(light.channels.red), green: level(light.channels.green), blue: level(light.channels.blue) },
       white: { value: level(light.channels.white) },
+      transitionTime: this.transitionMs(),
     }));
+  }
+
+  private transitionMs(): number {
+    const configured = Number(this.getSetting('transition_time'));
+    const seconds = Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_TRANSITION_S;
+    return Math.round(seconds * 1000);
   }
 
   /**
