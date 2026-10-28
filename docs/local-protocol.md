@@ -6,9 +6,10 @@ Klyqa's local protocol: a UDP broadcast for discovery, a TCP connection that
 the lamp opens back to the client, and AES-encrypted JSON over that connection.
 
 Everything below was verified on 2026-10-28 against two lamps on firmware
-V2.0.1.3 (SDK 1.1.0.1020), by packet capture of the JUWEL phone app and with a
-standalone probe. The crypto details match the open-source
-[klyqa-ctl](https://github.com/Klyqa/klyqa-ctl) (MIT).
+V2.0.1.3 (SDK 1.1.0.1020), by decrypting packet captures of the JUWEL phone
+app and with a standalone client, unless it says otherwise. The crypto
+details match the open-source [klyqa-ctl](https://github.com/Klyqa/klyqa-ctl)
+(MIT).
 
 ## Overview
 
@@ -45,10 +46,17 @@ and/or the subnet broadcast, e.g. `192.168.1.255`).
 
 - Every lamp that hears it answers `QCX-ACK` from its port 2222 to the
   client's port 2222.
-- The JUWEL phone app sends `QCX-SYN;<unit_id>` to address one lamp. A plain
-  `QCX-SYN` reaches every lamp on the network.
-- The phone app repeats the SYN about once a second. While SYNs keep coming,
-  a lamp dials in again about every 5 seconds.
+- `QCX-SYN;<unit_id>` addresses one lamp: only that lamp answers. The unit id
+  must be in capitals as in the ident (`QCX-SYN;A8E552XXXXXX`); a lowercase
+  one is not answered. The JUWEL phone app uses this form.
+- A plain `QCX-SYN` is only answered by a lamp that was the last one
+  addressed, or that has not heard an addressed SYN. After
+  `QCX-SYN;<unit_id>` for one lamp, the other lamps ignore plain SYNs (for at
+  least several minutes). Since the phone app addresses lamps, use the
+  addressed form whenever the unit id is known.
+- Repeat the SYN about once a second until the lamp connects, as the phone
+  app does. While SYNs keep coming, a lamp dials in again about every 5–6
+  seconds.
 - The client also receives its own broadcast; ignore anything starting with
   `QCX-SYN`.
 
@@ -126,10 +134,27 @@ answers with its own. Both sides then set up **AES-128-CBC**:
 
 ### The key
 
-The key is the device's `aesKey` from the MyJUWEL cloud (`GET /settings`,
-`devices[].aesKey`, a 32-character hex string = 16 bytes). Match a lamp to its
-key with `devices[].localDeviceId`, which equals the ident's `unit_id`. The
-key is per lamp. It is the only thing local control needs from the cloud.
+The key is the device's `aesKey` from the MyJUWEL cloud, a 32-character hex
+string (16 bytes). It is per lamp, and it is the only thing local control
+needs from the cloud. To read it with the account used in the JUWEL app:
+
+```
+POST https://app-api.prod.qconnex.io/auth/login
+Content-Type: application/json
+
+{"email": "…", "password": "…", "environmentName": "Juwel"}
+```
+
+The response carries `accountToken`. Then:
+
+```
+GET https://app-api.prod.qconnex.io/settings
+Authorization: Bearer <accountToken>
+```
+
+Each entry in `devices[]` has `aesKey` and `localDeviceId`, which equals the
+ident's `unit_id`; use it to match a lamp to its key. Treat the key like a
+password: anyone on the network who has it can control the lamp.
 
 Whether the key changes after a factory reset or re-onboarding is not known
 yet.
@@ -137,7 +162,11 @@ yet.
 ## 5. Messages
 
 Requests are answered in order, one reply per request, and replies carry no
-request id. Send one request at a time and wait for its reply.
+request id. Send one request at a time and wait for its reply. A reply with
+a non-empty `error` array means the lamp refused the request.
+
+The phone app adds `"ts": <epoch milliseconds>` to every request. The lamp
+answers requests without it just as well.
 
 ### Status
 
@@ -169,13 +198,26 @@ request id. Send one request at a time and wait for its reply.
 
 ### Manual light
 
+The four channels are 0–255. This is what the phone app sends for every
+colour or white change, always with both `color` and `white`:
+
 ```json
-{"type":"request","status":"on","brightness":{"percentage":44},"color":{"red":255,"green":255,"blue":255},"white":{"value":255}}
-{"type":"request","status":"off"}
+{"type":"request","color":{"red":0,"green":255,"blue":0},"white":{"value":128},"transitionTime":500}
 ```
 
-The reply is a status message. Send colour, white and brightness together
-when switching to manual light, so the output matches what was asked.
+`transitionTime` is the fade in milliseconds; the reply reports it. The app
+never sends `brightness` or `status`: its brightness is the channel values,
+and the master `brightness` stays where it is. The fields can be written,
+though:
+
+```json
+{"type":"request","status":"off"}
+{"type":"request","status":"on","brightness":{"percentage":100}}
+```
+
+`brightness` (0–100) scales all four channels. Keep it fixed and dim with
+the channel values, as the app does. The reply to every write is a status
+message.
 
 While the schedule runs (`mode: auto`), the lamp refuses the write. The reply
 echoes the requested values but carries an error, and the next status request
@@ -200,6 +242,32 @@ and keeps showing the schedule's light until a manual write. Resume switches
 back to `auto`, and the schedule's light returns immediately, even if the
 manual status is `off`. `timeout` is in seconds. These are the same JSON
 bodies as the cloud's `POST /device/{id}/command`.
+
+### Profiles
+
+```json
+{"type":"preset","action":"list"}
+```
+
+answers which profiles are stored in the lamp's slots and which slot runs on
+each weekday (index 0 = Sunday). A profile's `name` is its MyJUWEL preset id;
+`active_preset` in the status is the running slot:
+
+```json
+{"type":"preset_list","presets":[{"id":0,"name":"0","datapoints":12},{"id":1,"name":"3xtszjs7idc8","datapoints":6}],"preset_id_by_weekday":[1,1,1,1,1,1,1],"preset_count":2,"last_update":1790518379}
+```
+
+`{"type":"preset","action":"preview_timer"}` answers
+`{"type":"preset","timeout":<seconds>}`.
+
+Seen in the phone app's traffic when a profile is edited, not tried: it
+uploads the profile to a slot, then assigns the slot to a weekday. The
+`preset` payload is a base64 binary format that is not decoded yet.
+
+```json
+{"type":"preset","action":"put","id":2,"preset":"<base64>"}
+{"type":"preset","action":"set","id":2,"dayOfWeek":3}
+```
 
 ### Other commands
 
@@ -243,4 +311,5 @@ while True:
 
 The second terminal shows your own `QCX-SYN` and a `QCX-ACK` from each lamp;
 the first shows one lamp's ident. `nc` accepts a single connection, so other
-lamps are refused.
+lamps are refused. If no lamp answers, wait a few seconds and try again, or
+send `QCX-SYN;<unit_id>` instead.
