@@ -4,7 +4,12 @@ import { JuwelLocalError, type JuwelLocal } from '../../lib/juwel/local.js';
 import type JuwelApp from '../../app.js';
 import { hsToRgbPercent, rgbPercentToHs } from '../../lib/color.js';
 
-const DEFAULT_POLL_INTERVAL = 30;
+/**
+ * How often the lamp is asked for its status, in milliseconds. It does not
+ * report changes by itself, such as the schedule's light changing or a change
+ * made in the MyJUWEL app, and a request takes about 20 ms.
+ */
+const POLL_INTERVAL_MS = 10_000;
 
 /**
  * How long a manual override holds the schedule before the lamp resumes it by
@@ -127,10 +132,6 @@ export default class HeliaLuxDevice extends Homey.Device {
     this.startPolling();
 
     this.log(`"${this.getName()}" has been initialized`);
-  }
-
-  async onSettings({ changedKeys }: { changedKeys: string[] }) {
-    if (changedKeys.includes('poll_interval')) this.startPolling();
   }
 
   async onUninit() {
@@ -398,13 +399,9 @@ export default class HeliaLuxDevice extends Homey.Device {
 
   private startPolling() {
     if (this.pollTimer !== null) this.homey.clearInterval(this.pollTimer);
-
-    const configured = Number(this.getSetting('poll_interval'));
-    const seconds = Number.isFinite(configured) && configured >= 10 ? configured : DEFAULT_POLL_INTERVAL;
-
     this.pollTimer = this.homey.setInterval(() => {
       this.refresh().catch((err) => this.error('Poll failed:', err));
-    }, seconds * 1000);
+    }, POLL_INTERVAL_MS);
   }
 
   private stopTimers() {
