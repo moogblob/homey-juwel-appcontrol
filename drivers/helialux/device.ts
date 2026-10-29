@@ -43,7 +43,11 @@ const RESUME_SETTLE_MS = 1500;
 const COLOR_DEBOUNCE_MS = 500;
 
 /** A lamp's status as it answers `{"type":"request"}`. */
-type LocalStatus = HeliaLuxState & { error?: string[] };
+type LocalStatus = HeliaLuxState & {
+  error?: string[];
+  /** The lamp's Wi-Fi connection; `rssi` in dBm. */
+  wifi_parameters?: { rssi?: number; security?: number; channel?: number };
+};
 
 /**
  * A light in Homey's terms, all in percent (0..100): `brightness` (`dim`)
@@ -115,6 +119,10 @@ export default class HeliaLuxDevice extends Homey.Device {
     }
     this.getLocal().addLamp(this.getUnitId(), aesKey);
     this.getLocal().on('message', this.onLocalMessage);
+
+    // Added in 1.0.4; lamps paired before have to get it here.
+    if (!this.hasCapability('helialux_wifi_signal')) await this.addCapability('helialux_wifi_signal');
+    if (this.hasCapability('measure_signal_strength')) await this.removeCapability('measure_signal_strength');
 
     this.registerCapabilityListener('onoff', (value: boolean) => this.writing(() => this.setPower(value)));
     this.registerCapabilityListener('dim', (value: number) => this.writing(() => this.setBrightness(value)));
@@ -365,6 +373,9 @@ export default class HeliaLuxDevice extends Homey.Device {
 
     if (state.mode !== undefined) {
       await this.setCapabilityValue('helialux_mode', state.mode);
+    }
+    if (typeof state.wifi_parameters?.rssi === 'number') {
+      await this.setCapabilityValue('helialux_wifi_signal', state.wifi_parameters.rssi);
     }
 
     // When dark, the levels stay where they were, ready for "on".

@@ -11,7 +11,8 @@
     "light_hue",
     "light_saturation",
     "dim.white",
-    "helialux_mode"
+    "helialux_mode",
+    "helialux_wifi_signal"
   ],
   "capabilitiesOptions": {
     "onoff": {

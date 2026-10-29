@@ -60,7 +60,8 @@
         "light_hue",
         "light_saturation",
         "dim.white",
-        "helialux_mode"
+        "helialux_mode",
+        "helialux_wifi_signal"
       ],
       "capabilitiesOptions": {
         "onoff": {
@@ -168,6 +169,30 @@
           }
         }
       ]
+    },
+    "helialux_wifi_signal": {
+      "type": "number",
+      "title": {
+        "en": "Wi-Fi signal",
+        "de": "WLAN-Signal",
+        "sv": "Wi-Fi-signal"
+      },
+      "desc": {
+        "en": "The lamp's Wi-Fi signal strength.",
+        "de": "Die WLAN-Signalstärke der Leuchte.",
+        "sv": "Lampans Wi-Fi-signalstyrka."
+      },
+      "units": {
+        "en": "dBm",
+        "de": "dBm",
+        "sv": "dBm"
+      },
+      "decimals": 0,
+      "uiComponent": "sensor",
+      "icon": "/assets/wifi.svg",
+      "getable": true,
+      "setable": false,
+      "insights": false
     }
   }
 }
