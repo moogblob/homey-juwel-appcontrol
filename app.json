@@ -80,6 +80,9 @@
             "de": "Weiß",
             "sv": "Vitt"
           }
+        },
+        "measure_power": {
+          "approximated": true
         }
       },
       "platforms": [
@@ -108,27 +111,156 @@
       ],
       "settings": [
         {
-          "id": "transition_time",
-          "type": "number",
+          "type": "group",
           "label": {
-            "en": "Fade time",
-            "de": "Überblendzeit",
-            "sv": "Övertoningstid"
+            "en": "Lamp",
+            "de": "Leuchte",
+            "sv": "Lampa"
           },
-          "hint": {
-            "en": "How long the lamp takes to fade to a new light set from Homey, such as on, off, brightness or colour, in seconds. 0 changes it at once.",
-            "de": "Wie lange die Leuchte braucht, um zu einem in Homey eingestellten Licht überzublenden, etwa beim Ein- und Ausschalten oder bei Helligkeit und Farbe, in Sekunden. Bei 0 wechselt sie sofort.",
-            "sv": "Hur lång tid lampan tar på sig att tona över till ett ljus som ställts in från Homey, till exempel på, av, ljusstyrka eller färg, i sekunder. Med 0 byter den direkt."
-          },
-          "value": 1,
-          "min": 0,
-          "max": 60,
-          "step": 0.1,
-          "units": {
-            "en": "s",
-            "de": "s",
-            "sv": "s"
-          }
+          "children": [
+            {
+              "id": "transition_time",
+              "type": "number",
+              "label": {
+                "en": "Fade time",
+                "de": "Überblendzeit",
+                "sv": "Övertoningstid"
+              },
+              "hint": {
+                "en": "How long the lamp takes to fade to a new light set from Homey, such as on, off, brightness or colour, in seconds. 0 changes it at once.",
+                "de": "Wie lange die Leuchte braucht, um zu einem in Homey eingestellten Licht überzublenden, etwa beim Ein- und Ausschalten oder bei Helligkeit und Farbe, in Sekunden. Bei 0 wechselt sie sofort.",
+                "sv": "Hur lång tid lampan tar på sig att tona över till ett ljus som ställts in från Homey, till exempel på, av, ljusstyrka eller färg, i sekunder. Med 0 byter den direkt."
+              },
+              "value": 1,
+              "min": 0,
+              "max": 60,
+              "step": 0.1,
+              "units": {
+                "en": "s",
+                "de": "s",
+                "sv": "s"
+              }
+            },
+            {
+              "id": "light_unit_model",
+              "type": "dropdown",
+              "label": {
+                "en": "Model",
+                "de": "Modell",
+                "sv": "Modell"
+              },
+              "hint": {
+                "en": "The HeliaLux Spectrum connected to this controller. Homey estimates the power use from its wattage and the light it shows; the lamp does not measure it. Not set leaves power out.",
+                "de": "Die HeliaLux Spectrum, die an diesem Controller hängt. Homey schätzt den Stromverbrauch aus ihrer Leistung und dem Licht, das sie zeigt; die Leuchte misst ihn nicht. Bei Nicht festgelegt entfällt der Verbrauch.",
+                "sv": "Den HeliaLux Spectrum som sitter på den här styrenheten. Homey uppskattar elförbrukningen utifrån dess effekt och ljuset den visar; lampan mäter den inte. Med Inte vald visas ingen förbrukning."
+              },
+              "value": "none",
+              "values": [
+                {
+                  "id": "none",
+                  "label": {
+                    "en": "Not set",
+                    "de": "Nicht festgelegt",
+                    "sv": "Inte vald"
+                  }
+                },
+                {
+                  "id": "550",
+                  "label": {
+                    "en": "HeliaLux Spectrum 550",
+                    "de": "HeliaLux Spectrum 550",
+                    "sv": "HeliaLux Spectrum 550"
+                  }
+                },
+                {
+                  "id": "600",
+                  "label": {
+                    "en": "HeliaLux Spectrum 600",
+                    "de": "HeliaLux Spectrum 600",
+                    "sv": "HeliaLux Spectrum 600"
+                  }
+                },
+                {
+                  "id": "700",
+                  "label": {
+                    "en": "HeliaLux Spectrum 700",
+                    "de": "HeliaLux Spectrum 700",
+                    "sv": "HeliaLux Spectrum 700"
+                  }
+                },
+                {
+                  "id": "800",
+                  "label": {
+                    "en": "HeliaLux Spectrum 800",
+                    "de": "HeliaLux Spectrum 800",
+                    "sv": "HeliaLux Spectrum 800"
+                  }
+                },
+                {
+                  "id": "920",
+                  "label": {
+                    "en": "HeliaLux Spectrum 920",
+                    "de": "HeliaLux Spectrum 920",
+                    "sv": "HeliaLux Spectrum 920"
+                  }
+                },
+                {
+                  "id": "1000",
+                  "label": {
+                    "en": "HeliaLux Spectrum 1000",
+                    "de": "HeliaLux Spectrum 1000",
+                    "sv": "HeliaLux Spectrum 1000"
+                  }
+                },
+                {
+                  "id": "1200",
+                  "label": {
+                    "en": "HeliaLux Spectrum 1200",
+                    "de": "HeliaLux Spectrum 1200",
+                    "sv": "HeliaLux Spectrum 1200"
+                  }
+                },
+                {
+                  "id": "1500",
+                  "label": {
+                    "en": "HeliaLux Spectrum 1500",
+                    "de": "HeliaLux Spectrum 1500",
+                    "sv": "HeliaLux Spectrum 1500"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "light_unit_v2",
+              "type": "checkbox",
+              "label": {
+                "en": "Spectrum 2.0",
+                "de": "Spectrum 2.0",
+                "sv": "Spectrum 2.0"
+              },
+              "hint": {
+                "en": "Tick for HeliaLux Spectrum 2.0, which is brighter and uses more power than the first version.",
+                "de": "Für HeliaLux Spectrum 2.0 ankreuzen, die heller ist und mehr Strom braucht als die erste Version.",
+                "sv": "Kryssa i för HeliaLux Spectrum 2.0, som är ljusstarkare och drar mer ström än den första versionen."
+              },
+              "value": false
+            },
+            {
+              "id": "light_unit_power",
+              "type": "label",
+              "label": {
+                "en": "Power at full light",
+                "de": "Leistung bei vollem Licht",
+                "sv": "Effekt vid fullt ljus"
+              },
+              "hint": {
+                "en": "The rated power of the chosen model and version. Homey estimates the power use from it and the light the lamp shows.",
+                "de": "Die Nennleistung des gewählten Modells und der gewählten Version. Homey schätzt daraus und aus dem Licht der Leuchte den Stromverbrauch.",
+                "sv": "Märkeffekten för vald modell och version. Homey uppskattar elförbrukningen utifrån den och ljuset lampan visar."
+              },
+              "value": "–"
+            }
+          ]
         }
       ],
       "id": "helialux"

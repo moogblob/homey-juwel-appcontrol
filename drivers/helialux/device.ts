@@ -39,8 +39,27 @@ const OFFLINE_AFTER_FAILURES = 2;
  */
 const RESUME_SETTLE_MS = 1500;
 
+/** Homey stores changed settings only after `onSettings` returns; wait this long before using them. */
+const SETTINGS_SAVE_MS = 1000;
+
 /** Colour changes arrive one capability at a time; coalesce them into one call. */
 const COLOR_DEBOUNCE_MS = 500;
+
+/**
+ * Rated power at full light in watts, by version (1, or 2 when the
+ * `light_unit_v2` setting is ticked) and then `light_unit_model` setting.
+ * The controller does not know which light unit hangs on it, so the user
+ * picks it. Spectrum figures are JUWEL's, Spectrum 2.0 figures are from
+ * retailers.
+ */
+const LIGHT_UNIT_WATTS: Record<number, Record<string, number>> = {
+  1: {
+    550: 27, 600: 29, 700: 32, 800: 32, 920: 40, 1000: 48, 1200: 60, 1500: 60,
+  },
+  2: {
+    550: 45, 600: 45, 700: 50, 800: 50, 920: 60, 1000: 60, 1200: 60, 1500: 60,
+  },
+};
 
 /** A lamp's status as it answers `{"type":"request"}`. */
 type LocalStatus = HeliaLuxState & {
@@ -123,6 +142,11 @@ export default class HeliaLuxDevice extends Homey.Device {
     // Added in 1.0.4; lamps paired before have to get it here.
     if (!this.hasCapability('helialux_wifi_signal')) await this.addCapability('helialux_wifi_signal');
     if (this.hasCapability('measure_signal_strength')) await this.removeCapability('measure_signal_strength');
+    // Added in 1.0.4; lamps paired before have no value, which shows as a dash.
+    if (typeof this.getSetting('light_unit_model') !== 'string') await this.setSettings({ light_unit_model: 'none' });
+    if (typeof this.getSetting('light_unit_v2') !== 'boolean') await this.setSettings({ light_unit_v2: false });
+    await this.showRatedPower();
+    await this.usePowerCapability();
 
     this.registerCapabilityListener('onoff', (value: boolean) => this.writing(() => this.setPower(value)));
     this.registerCapabilityListener('dim', (value: number) => this.writing(() => this.setBrightness(value)));
@@ -145,6 +169,17 @@ export default class HeliaLuxDevice extends Homey.Device {
   async onUninit() {
     this.stopTimers();
     this.getLocal().off('message', this.onLocalMessage);
+  }
+
+  async onSettings({ changedKeys }: { changedKeys: string[] }) {
+    if (!changedKeys.some((key) => key.startsWith('light_unit_'))) return;
+    // Homey stores the new value only after this returns, so the status read
+    // once it is stored applies it.
+    this.homey.setTimeout(() => {
+      this.showRatedPower()
+        .then(() => this.refresh())
+        .catch((err) => this.error('Applying the light unit failed:', err));
+    }, SETTINGS_SAVE_MS);
   }
 
   onDeleted() {
@@ -382,6 +417,7 @@ export default class HeliaLuxDevice extends Homey.Device {
     const light = this.litLight(state);
     await this.setCapabilityValue('onoff', light !== null);
     if (light !== null) await this.showLight(light);
+    await this.showPower(light);
   }
 
   private async showLight(light: Light) {
@@ -395,6 +431,46 @@ export default class HeliaLuxDevice extends Homey.Device {
       await this.setCapabilityValue('light_hue', hs.hue);
       await this.setCapabilityValue('light_saturation', hs.saturation);
     }
+  }
+
+  /** The chosen light unit's rated power in watts, or null when none is chosen. */
+  private lightUnitWatts(): number | null {
+    const version = LIGHT_UNIT_WATTS[this.getSetting('light_unit_v2') === true ? 2 : 1];
+    return version[this.getSetting('light_unit_model') as string] ?? null;
+  }
+
+  /** Show the chosen light unit's rated power in the device settings. */
+  private async showRatedPower() {
+    const watts = this.lightUnitWatts();
+    const text = watts === null ? '–' : `${watts} W`;
+    if (this.getSetting('light_unit_power') !== text) await this.setSettings({ light_unit_power: text });
+  }
+
+  /** Show power use only once the user has said which light unit it is. */
+  private async usePowerCapability() {
+    const known = this.lightUnitWatts() !== null;
+    if (known && !this.hasCapability('measure_power')) {
+      await this.addCapability('measure_power');
+      await this.setCapabilityOptions('measure_power', { approximated: true });
+    } else if (!known && this.hasCapability('measure_power')) {
+      await this.removeCapability('measure_power');
+    }
+  }
+
+  /**
+   * Estimated power use for `light` (null when dark): the light unit's rated
+   * power times the mean output of its four channels. JUWEL gives no
+   * per-channel figures, so they are weighted equally; full white on all
+   * four is the rated power.
+   */
+  private async showPower(light: Light | null) {
+    await this.usePowerCapability();
+    const watts = this.lightUnitWatts();
+    if (watts === null) return;
+
+    const output = light === null ? 0 : (light.brightness / 100)
+      * ((light.channels.red + light.channels.green + light.channels.blue + light.channels.white) / 400);
+    await this.setCapabilityValue('measure_power', Math.round(watts * output * 10) / 10);
   }
 
   // ---- plumbing --------------------------------------------------------
