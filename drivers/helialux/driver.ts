@@ -41,7 +41,7 @@ export default class HeliaLuxDriver extends Homey.Driver {
       .map((device) => ({
         name: lampName(device.name),
         data: { id: normalizeUnitId(device.localDeviceId) },
-        store: { productId: device.productId, aesKey: device.aesKey },
+        store: { productId: device.productId, aesKey: device.aesKey, spectrum: device.helialuxSpectrum },
       }));
   }
 

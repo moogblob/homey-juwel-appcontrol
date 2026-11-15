@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { pctToByte, type ChannelValues, type HeliaLuxState } from '../../lib/juwel/client.js';
-import { JuwelLocalError, type JuwelLocal } from '../../lib/juwel/local.js';
+import { JuwelLocalError, normalizeUnitId, type JuwelLocal } from '../../lib/juwel/local.js';
 import type JuwelApp from '../../app.js';
 import { hsToRgbPercent, rgbPercentToHs } from '../../lib/color.js';
 
@@ -27,6 +27,12 @@ const STORE_OFF_FROM_SCHEDULE_AT = 'offFromScheduleAt';
 /** Store key holding the manual light (a `Light`) the lamp had when Homey switched it off. */
 const STORE_LAST_LIGHT = 'lastLight';
 
+/**
+ * Store key holding MyJUWEL's `helialuxSpectrum` for the lamp: "spectrum" for
+ * a HeliaLux Spectrum, "spectrum_2" for a Spectrum 2.0.
+ */
+const STORE_SPECTRUM = 'spectrum';
+
 /** Fade time when the setting is missing, in seconds. The lamp's own default. */
 const DEFAULT_TRANSITION_S = 1;
 
@@ -46,11 +52,10 @@ const SETTINGS_SAVE_MS = 1000;
 const COLOR_DEBOUNCE_MS = 500;
 
 /**
- * Rated power at full light in watts, by version (1, or 2 when the
- * `light_unit_v2` setting is ticked) and then `light_unit_model` setting.
- * The controller does not know which light unit hangs on it, so the user
- * picks it. Spectrum figures are JUWEL's, Spectrum 2.0 figures are from
- * retailers.
+ * Rated power at full light in watts, by version (1, or 2 when MyJUWEL
+ * reports a Spectrum 2.0) and then `light_unit_model` setting. The
+ * controller does not know the light unit's length, so the user picks it.
+ * Spectrum figures are JUWEL's, Spectrum 2.0 figures are from retailers.
  */
 const LIGHT_UNIT_WATTS: Record<number, Record<string, number>> = {
   1: {
@@ -144,9 +149,12 @@ export default class HeliaLuxDevice extends Homey.Device {
     if (this.hasCapability('measure_signal_strength')) await this.removeCapability('measure_signal_strength');
     // Added in 1.0.4; lamps paired before have no value, which shows as a dash.
     if (typeof this.getSetting('light_unit_model') !== 'string') await this.setSettings({ light_unit_model: 'none' });
-    if (typeof this.getSetting('light_unit_v2') !== 'boolean') await this.setSettings({ light_unit_v2: false });
     await this.showRatedPower();
     await this.usePowerCapability();
+    // Stored at pairing; lamps paired before read it from MyJUWEL once.
+    if (typeof this.getStoreValue(STORE_SPECTRUM) !== 'string') {
+      this.lookUpSpectrum().catch((err) => this.error('Could not read the Spectrum version from MyJUWEL:', err));
+    }
 
     this.registerCapabilityListener('onoff', (value: boolean) => this.writing(() => this.setPower(value)));
     this.registerCapabilityListener('dim', (value: number) => this.writing(() => this.setBrightness(value)));
@@ -435,8 +443,20 @@ export default class HeliaLuxDevice extends Homey.Device {
 
   /** The chosen light unit's rated power in watts, or null when none is chosen. */
   private lightUnitWatts(): number | null {
-    const version = LIGHT_UNIT_WATTS[this.getSetting('light_unit_v2') === true ? 2 : 1];
+    const version = LIGHT_UNIT_WATTS[this.getStoreValue(STORE_SPECTRUM) === 'spectrum_2' ? 2 : 1];
     return version[this.getSetting('light_unit_model') as string] ?? null;
+  }
+
+  /** Read the lamp's Spectrum version from MyJUWEL, store it and show the power it gives. */
+  private async lookUpSpectrum() {
+    const settings = await (this.homey.app as JuwelApp).getCloud().getSettings();
+    const device = (settings.devices ?? [])
+      .find((d) => d.localDeviceId && normalizeUnitId(d.localDeviceId) === this.getUnitId());
+    if (typeof device?.helialuxSpectrum !== 'string') return;
+
+    await this.setStoreValue(STORE_SPECTRUM, device.helialuxSpectrum);
+    await this.showRatedPower();
+    await this.refresh();
   }
 
   /** Show the chosen light unit's rated power in the device settings. */

@@ -231,21 +231,6 @@
               ]
             },
             {
-              "id": "light_unit_v2",
-              "type": "checkbox",
-              "label": {
-                "en": "Spectrum 2.0",
-                "de": "Spectrum 2.0",
-                "sv": "Spectrum 2.0"
-              },
-              "hint": {
-                "en": "Tick for HeliaLux Spectrum 2.0, which is brighter and uses more power than the first version.",
-                "de": "Für HeliaLux Spectrum 2.0 ankreuzen, die heller ist und mehr Strom braucht als die erste Version.",
-                "sv": "Kryssa i för HeliaLux Spectrum 2.0, som är ljusstarkare och drar mer ström än den första versionen."
-              },
-              "value": false
-            },
-            {
               "id": "light_unit_power",
               "type": "label",
               "label": {
@@ -254,9 +239,9 @@
                 "sv": "Effekt vid fullt ljus"
               },
               "hint": {
-                "en": "The rated power of the chosen model and version. Homey estimates the power use from it and the light the lamp shows.",
-                "de": "Die Nennleistung des gewählten Modells und der gewählten Version. Homey schätzt daraus und aus dem Licht der Leuchte den Stromverbrauch.",
-                "sv": "Märkeffekten för vald modell och version. Homey uppskattar elförbrukningen utifrån den och ljuset lampan visar."
+                "en": "The rated power of the chosen model, for the Spectrum version MyJUWEL reports for this lamp. Homey estimates the power use from it and the light the lamp shows.",
+                "de": "Die Nennleistung des gewählten Modells in der Spectrum-Version, die MyJUWEL für diese Leuchte meldet. Homey schätzt daraus und aus dem Licht der Leuchte den Stromverbrauch.",
+                "sv": "Märkeffekten för vald modell, i den Spectrum-version som MyJUWEL anger för lampan. Homey uppskattar elförbrukningen utifrån den och ljuset lampan visar."
               },
               "value": "–"
             }
